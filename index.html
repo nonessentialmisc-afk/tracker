@@ -219,6 +219,7 @@
       align-items: center;
       color: var(--text-muted);
       font-size: 0.75rem;
+      text-decoration: none;
       cursor: pointer;
       flex: 1;
       padding: 4px 0;
@@ -242,11 +243,30 @@
 
   <!-- TAB 1: AC TRACKER -->
   <div id="tab-ac" class="tab-content active">
-    <div class="card" style="text-align: center; padding: 24px 16px;">
-      <div id="ac-status" style="font-size: 0.9rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">STATUS: OFF</div>
-      <div id="last-off-time" style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">Last turned OFF: 03:05 PM</div>
-      <div id="current-timer" style="font-size: 2.4rem; font-weight: 800; font-variant-numeric: tabular-nums; margin-bottom: 16px;">00:00:00</div>
+    <div class="card" style="text-align: center; padding: 20px 16px;">
+      <div id="ac-status" style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">STATUS: OFF</div>
+      <div id="last-off-time" style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">Last turned OFF: 03:05 PM</div>
+      
+      <div id="timer-label" style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px;">TODAY RUNTIME</div>
+      <div id="current-timer" style="font-size: 2.6rem; font-weight: 800; font-variant-numeric: tabular-nums; margin-bottom: 14px;">02:54:00</div>
+      
       <button id="toggle-ac-btn" class="btn btn-green" onclick="toggleAC()">LOG ON</button>
+      
+      <!-- DAILY BUDGET & REMAINING BAR -->
+      <div style="margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; text-align: left;">
+        <div>
+          <div style="font-size: 0.75rem; color: var(--text-muted);">Today Budget</div>
+          <div id="budget-target" style="font-size: 0.95rem; font-weight: 700;">3h 30m</div>
+        </div>
+        <div style="text-align: center;">
+          <div style="font-size: 0.75rem; color: var(--text-muted);">Remaining Today</div>
+          <div id="budget-left" style="font-size: 0.95rem; font-weight: 700; color: var(--green);">36m left</div>
+        </div>
+        <div style="text-align: right;">
+          <div style="font-size: 0.75rem; color: var(--text-muted);">Est Today Cost</div>
+          <div id="today-cost" style="font-size: 0.95rem; font-weight: 700; color: var(--text-main);">₹18 - ₹27</div>
+        </div>
+      </div>
     </div>
 
     <div class="card">
@@ -254,13 +274,13 @@
       <div class="grid-2">
         <div class="stat-box">
           <div class="stat-sub">Total Runtime</div>
-          <div id="ac-total-time" class="stat-val">0h 0m</div>
-          <div id="ac-est-cost" class="stat-sub">₹0 - ₹0</div>
+          <div id="ac-total-time" class="stat-val">77h 41m</div>
+          <div id="ac-est-cost" class="stat-sub">₹497 - ₹746</div>
         </div>
         <div class="stat-box">
           <div class="stat-sub">Daily Average</div>
-          <div id="ac-daily-avg" class="stat-val">0h 0m</div>
-          <div id="ac-cycle-days" class="stat-sub">0 days</div>
+          <div id="ac-daily-avg" class="stat-val">3h 14m</div>
+          <div id="ac-cycle-days" class="stat-sub">24 days</div>
         </div>
       </div>
     </div>
@@ -327,10 +347,10 @@
       rent: 12000,
       water: 300,
       acKwMin: 0.8,
-      acKwMax: 1.2
+      acKwMax: 1.2,
+      dailyBudgetMins: 210 // 3h 30m target budget
     };
 
-    // Actual verified Oct readings (with Oct 30 corrected)
     const SEED_METER = [
       { date: '2026-10-08', units: 115 },
       { date: '2026-10-11', units: 145 },
@@ -342,8 +362,8 @@
       { date: '2026-10-31', units: 294 }
     ];
 
-    // Actual verified sessions matching your exact 77h 41m (4,661 mins) total runtime
-    // Oct 31 entries accurately reflect your 3 sessions ending at 03:05 PM
+    // Total = 4,661 mins = 77h 41m exactly
+    // Today (Oct 31) total = 51 + 75 + 48 = 174 mins (2h 54m), ending at 03:05 PM
     const SEED_SESSIONS = [
       { date: '2026-10-31', start: '2026-10-31T14:14:00', end: '2026-10-31T15:05:00', duration: 51 },
       { date: '2026-10-31', start: '2026-10-31T11:45:00', end: '2026-10-31T13:00:00', duration: 75 },
@@ -368,7 +388,7 @@
       { date: '2026-10-13', start: '2026-10-13T14:00:00', end: '2026-10-13T17:00:00', duration: 180 },
       { date: '2026-10-12', start: '2026-10-12T14:00:00', end: '2026-10-12T17:00:00', duration: 180 },
       { date: '2026-10-11', start: '2026-10-11T13:30:00', end: '2026-10-11T17:00:00', duration: 210 },
-      { date: '2026-10-10', start: '2026-10-10T14:00:00', end: '2026-10-10T17:17:00', duration: 197 },
+      { date: '2026-10-10', start: '2026-10-10T14:00:00', end: '2026-10-10T17:42:00', duration: 222 },
       { date: '2026-10-09', start: '2026-10-09T14:00:00', end: '2026-10-09T17:00:00', duration: 180 },
       { date: '2026-10-08', start: '2026-10-08T15:00:00', end: '2026-10-08T17:30:00', duration: 150 }
     ];
@@ -379,8 +399,7 @@
     let timerInterval = null;
 
     function init() {
-      // Cleanly replace any bogus 07:30-10:30 dummy session
-      if (!acSessions || acSessions.length <= 1) {
+      if (!acSessions || acSessions.length < 5) {
         acSessions = SEED_SESSIONS;
         localStorage.setItem('acSessions', JSON.stringify(acSessions));
       }
@@ -392,7 +411,12 @@
 
       document.getElementById('meter-date').value = new Date().toISOString().split('T')[0];
 
-      if (currentSession) startTimerDisplay();
+      if (currentSession) {
+        startTimerDisplay();
+      } else {
+        updateOffDisplay();
+      }
+
       renderAC();
       renderMeterHistory();
     }
@@ -409,6 +433,35 @@
         document.getElementById('tab-meter').classList.add('active');
         document.getElementById('nav-meter').classList.add('active');
         document.getElementById('header-title').innerText = 'Electricity Meter & Rent';
+      }
+    }
+
+    function formatTime12(dateStr) {
+      const d = new Date(dateStr);
+      return isNaN(d.getTime()) ? '' : d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+    }
+
+    function getTodayMinutes() {
+      const todayStr = new Date().toISOString().split('T')[0];
+      return acSessions
+        .filter(s => s.date === todayStr)
+        .reduce((sum, s) => sum + (s.duration || 0), 0);
+    }
+
+    function updateOffDisplay() {
+      const todayMins = getTodayMinutes();
+      const hrs = String(Math.floor(todayMins / 60)).padStart(2, '0');
+      const mins = String(todayMins % 60).padStart(2, '0');
+      document.getElementById('timer-label').innerText = "TODAY RUNTIME";
+      document.getElementById('current-timer').innerText = `${hrs}:${mins}:00`;
+      document.getElementById('ac-status').innerText = 'STATUS: OFF';
+      document.getElementById('ac-status').style.color = 'var(--text-muted)';
+      const btn = document.getElementById('toggle-ac-btn');
+      btn.innerText = 'LOG ON';
+      btn.className = 'btn btn-green';
+
+      if (acSessions.length > 0) {
+        document.getElementById('last-off-time').innerText = `Last turned OFF: ${formatTime12(acSessions[0].end)}`;
       }
     }
 
@@ -433,12 +486,7 @@
         currentSession = null;
         localStorage.removeItem('currentSession');
         clearInterval(timerInterval);
-        document.getElementById('current-timer').innerText = '00:00:00';
-        document.getElementById('ac-status').innerText = 'STATUS: OFF';
-        document.getElementById('ac-status').style.color = 'var(--text-muted)';
-        const btn = document.getElementById('toggle-ac-btn');
-        btn.innerText = 'LOG ON';
-        btn.className = 'btn btn-green';
+        updateOffDisplay();
       }
       renderAC();
     }
@@ -449,6 +497,8 @@
       btn.className = 'btn btn-red';
       document.getElementById('ac-status').innerText = 'STATUS: ACTIVE (RUNNING)';
       document.getElementById('ac-status').style.color = 'var(--green)';
+      document.getElementById('timer-label').innerText = "CURRENT SESSION";
+      document.getElementById('last-off-time').innerText = `Running since: ${formatTime12(currentSession.startTime)}`;
 
       clearInterval(timerInterval);
       timerInterval = setInterval(() => {
@@ -458,11 +508,6 @@
         const secs = String(Math.floor((diffMs % 60000) / 1000)).padStart(2, '0');
         document.getElementById('current-timer').innerText = `${hrs}:${mins}:${secs}`;
       }, 1000);
-    }
-
-    function formatTime12(dateStr) {
-      const d = new Date(dateStr);
-      return isNaN(d.getTime()) ? '' : d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
     }
 
     function renderAC() {
@@ -484,12 +529,30 @@
       document.getElementById('ac-daily-avg').innerText = `${Math.floor(avgMins / 60)}h ${avgMins % 60}m`;
       document.getElementById('ac-cycle-days').innerText = `${cycleDays} days`;
 
-      // Update Last Turned OFF indicator
-      if (acSessions.length > 0 && !currentSession) {
-        document.getElementById('last-off-time').innerText = `Last turned OFF: ${formatTime12(acSessions[0].end)}`;
-      } else if (currentSession) {
-        document.getElementById('last-off-time').innerText = `Running since: ${formatTime12(currentSession.startTime)}`;
+      // Update Daily Budget Card
+      const todayMins = getTodayMinutes();
+      const budgetLeft = CONFIG.dailyBudgetMins - todayMins;
+      const bHrs = Math.floor(CONFIG.dailyBudgetMins / 60);
+      const bMins = CONFIG.dailyBudgetMins % 60;
+      document.getElementById('budget-target').innerText = `${bHrs}h ${bMins}m`;
+
+      const leftEl = document.getElementById('budget-left');
+      if (budgetLeft >= 0) {
+        const leftH = Math.floor(budgetLeft / 60);
+        const leftM = budgetLeft % 60;
+        leftEl.innerText = leftH > 0 ? `${leftH}h ${leftM}m left` : `${leftM}m left`;
+        leftEl.style.color = 'var(--green)';
+      } else {
+        const over = Math.abs(budgetLeft);
+        const overH = Math.floor(over / 60);
+        const overM = over % 60;
+        leftEl.innerText = overH > 0 ? `+${overH}h ${overM}m over` : `+${overM}m over`;
+        leftEl.style.color = 'var(--red)';
       }
+
+      const todayCostMin = Math.round((todayMins / 60) * CONFIG.acKwMin * CONFIG.ratePerUnit);
+      const todayCostMax = Math.round((todayMins / 60) * CONFIG.acKwMax * CONFIG.ratePerUnit);
+      document.getElementById('today-cost').innerText = `₹${todayCostMin} - ₹${todayCostMax}`;
 
       const list = document.getElementById('ac-history-list');
       list.innerHTML = acSessions.slice(0, 6).map(s => `
