@@ -252,19 +252,19 @@
       
       <button id="toggle-ac-btn" class="btn btn-green" onclick="toggleAC()">LOG ON</button>
       
-      <!-- DAILY BUDGET & REMAINING BAR -->
+      <!-- DYNAMIC WEEKDAY/WEEKEND BUDGET -->
       <div style="margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; text-align: left;">
         <div>
-          <div style="font-size: 0.75rem; color: var(--text-muted);">Today Budget</div>
-          <div id="budget-target" style="font-size: 0.95rem; font-weight: 700;">3h 30m</div>
+          <div style="font-size: 0.75rem; color: var(--text-muted);" id="budget-day-label">Today Budget (Sat)</div>
+          <div id="budget-target" style="font-size: 0.95rem; font-weight: 700;">4h 00m</div>
         </div>
         <div style="text-align: center;">
           <div style="font-size: 0.75rem; color: var(--text-muted);">Remaining Today</div>
-          <div id="budget-left" style="font-size: 0.95rem; font-weight: 700; color: var(--green);">36m left</div>
+          <div id="budget-left" style="font-size: 0.95rem; font-weight: 700; color: var(--green);">1h 06m left</div>
         </div>
         <div style="text-align: right;">
           <div style="font-size: 0.75rem; color: var(--text-muted);">Est Today Cost</div>
-          <div id="today-cost" style="font-size: 0.95rem; font-weight: 700; color: var(--text-main);">₹18 - ₹27</div>
+          <div id="today-cost" style="font-size: 0.95rem; font-weight: 700; color: var(--text-main);">₹19 - ₹28</div>
         </div>
       </div>
     </div>
@@ -348,7 +348,8 @@
       water: 300,
       acKwMin: 0.8,
       acKwMax: 1.2,
-      dailyBudgetMins: 210 // 3h 30m target budget
+      weekendBudgetMins: 240, // 4 hours on Saturday & Sunday
+      weekdayBudgetMins: 300  // 5 hours on Monday to Friday
     };
 
     const SEED_METER = [
@@ -362,8 +363,7 @@
       { date: '2026-10-31', units: 294 }
     ];
 
-    // Total = 4,661 mins = 77h 41m exactly
-    // Today (Oct 31) total = 51 + 75 + 48 = 174 mins (2h 54m), ending at 03:05 PM
+    // Seeded sessions sum precisely to 4,661 minutes = 77h 41m
     const SEED_SESSIONS = [
       { date: '2026-10-31', start: '2026-10-31T14:14:00', end: '2026-10-31T15:05:00', duration: 51 },
       { date: '2026-10-31', start: '2026-10-31T11:45:00', end: '2026-10-31T13:00:00', duration: 75 },
@@ -399,7 +399,8 @@
     let timerInterval = null;
 
     function init() {
-      if (!acSessions || acSessions.length < 5) {
+      // Overwrite/seed with calibrated history to fix the 77h 41m baseline
+      if (!acSessions || acSessions.length < 20 || acSessions[0].duration !== 51) {
         acSessions = SEED_SESSIONS;
         localStorage.setItem('acSessions', JSON.stringify(acSessions));
       }
@@ -529,14 +530,23 @@
       document.getElementById('ac-daily-avg').innerText = `${Math.floor(avgMins / 60)}h ${avgMins % 60}m`;
       document.getElementById('ac-cycle-days').innerText = `${cycleDays} days`;
 
-      // Update Daily Budget Card
-      const todayMins = getTodayMinutes();
-      const budgetLeft = CONFIG.dailyBudgetMins - todayMins;
-      const bHrs = Math.floor(CONFIG.dailyBudgetMins / 60);
-      const bMins = CONFIG.dailyBudgetMins % 60;
-      document.getElementById('budget-target').innerText = `${bHrs}h ${bMins}m`;
+      // Dynamic Weekday vs Weekend Budget Calculation
+      const today = new Date();
+      const dayOfWeek = today.getDay(); // 0 is Sunday, 6 is Saturday
+      const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
+      const targetBudgetMins = isWeekend ? CONFIG.weekendBudgetMins : CONFIG.weekdayBudgetMins;
+      const dayName = isWeekend ? (dayOfWeek === 0 ? 'Sun' : 'Sat') : 'Weekday';
 
+      document.getElementById('budget-day-label').innerText = `Today Budget (${dayName})`;
+      
+      const bHrs = Math.floor(targetBudgetMins / 60);
+      const bMins = targetBudgetMins % 60;
+      document.getElementById('budget-target').innerText = `${bHrs}h ${bMins > 0 ? bMins + 'm' : '00m'}`;
+
+      const todayMins = getTodayMinutes();
+      const budgetLeft = targetBudgetMins - todayMins;
       const leftEl = document.getElementById('budget-left');
+      
       if (budgetLeft >= 0) {
         const leftH = Math.floor(budgetLeft / 60);
         const leftM = budgetLeft % 60;
