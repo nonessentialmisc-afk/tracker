@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Utility & Rent Tracker</title>
   <meta name="theme-color" content="#121212">
-    <link rel="apple-touch-icon" href="icon.PNG">
-<link rel="icon" type="image/png" href="icon.PNG">
+  <link rel="apple-touch-icon" href="icon.PNG">
+  <link rel="icon" type="image/png" href="icon.PNG">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <style>
@@ -23,8 +23,19 @@
       --border: #374151;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background-color: var(--bg); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; padding-bottom: 75px; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      padding-bottom: 80px;
+    }
 
     header {
       background-color: var(--card-bg);
@@ -35,607 +46,582 @@
       top: 0;
       z-index: 10;
     }
-    header h1 { font-size: 1.1rem; font-weight: 700; letter-spacing: -0.2px; }
 
-    .tab-content { display: none; padding: 16px; max-width: 520px; margin: 0 auto; width: 100%; }
-    .tab-content.active { display: block; }
+    header h1 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .tab-content {
+      display: none;
+      padding: 16px;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
 
     .card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
+      background-color: var(--card-bg);
       border-radius: 12px;
       padding: 16px;
-      margin-bottom: 14px;
-      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.25);
+      margin-bottom: 16px;
+      border: 1px solid var(--border);
     }
-    .card-title { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
 
-    .stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    .stat-box { background: var(--card-subtle); padding: 12px; border-radius: 8px; text-align: center; }
-    .stat-box.full-width { grid-column: span 2; }
-    .stat-val { font-size: 1.35rem; font-weight: 700; margin-top: 4px; }
-    .stat-label { font-size: 0.72rem; color: var(--text-muted); }
+    .card-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 12px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    input, select {
+      width: 100%;
+      background-color: var(--card-subtle);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 1rem;
+      margin-bottom: 12px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: var(--accent);
+    }
 
     .btn {
       width: 100%;
-      padding: 13px;
-      font-size: 0.95rem;
+      padding: 14px;
+      border-radius: 8px;
+      font-size: 1rem;
       font-weight: 600;
       border: none;
-      border-radius: 8px;
       cursor: pointer;
-      display: inline-flex;
+      display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      transition: opacity 0.15s ease;
+      transition: opacity 0.2s ease;
     }
-    .btn:active { opacity: 0.8; }
-    .btn-green { background: var(--green); color: #fff; }
-    .btn-red { background: var(--red); color: #fff; }
-    .btn-blue { background: var(--accent); color: #fff; }
-    .btn-subtle { background: var(--card-subtle); color: var(--text-main); border: 1px solid var(--border); }
 
-    .log-list { list-style: none; margin-top: 6px; max-height: 220px; overflow-y: auto; }
-    .log-item {
+    .btn:active {
+      opacity: 0.8;
+    }
+
+    .btn-primary {
+      background-color: var(--accent);
+      color: #fff;
+    }
+
+    .btn-green {
+      background-color: var(--green);
+      color: #fff;
+    }
+
+    .btn-red {
+      background-color: var(--red);
+      color: #fff;
+    }
+
+    .btn-subtle {
+      background-color: var(--card-subtle);
+      color: var(--text-main);
+      border: 1px solid var(--border);
+      margin-top: 8px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .stat-box {
+      background-color: var(--card-subtle);
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .stat-val {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin: 4px 0;
+    }
+
+    .stat-sub {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .history-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 9px 0;
+      padding: 12px 0;
       border-bottom: 1px solid var(--border);
-      font-size: 0.85rem;
     }
-    .log-item:last-child { border-bottom: none; }
 
-    .input-group { margin-bottom: 12px; }
-    .input-group label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 4px; }
-    .input-field {
-      width: 100%;
-      background: var(--card-subtle);
+    .history-item:last-child {
+      border-bottom: none;
+    }
+
+    .action-btn {
+      background: none;
       border: 1px solid var(--border);
-      color: var(--text-main);
-      padding: 10px;
+      color: var(--text-muted);
+      padding: 4px 8px;
       border-radius: 6px;
-      font-size: 1rem;
+      font-size: 0.75rem;
+      cursor: pointer;
     }
 
-    nav.bottom-nav {
+    .action-btn.edit {
+      color: #60a5fa;
+      border-color: #1e3a8a;
+    }
+
+    .action-btn.del {
+      color: var(--red);
+      border-color: #7f1d1d;
+    }
+
+    .nav-bar {
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
-      background: var(--card-bg);
-      display: flex;
+      background-color: var(--card-bg);
       border-top: 1px solid var(--border);
-      height: 60px;
-      z-index: 20;
+      display: flex;
+      justify-content: space-around;
+      padding: 8px 0 env(safe-area-inset-bottom, 8px);
+      z-index: 100;
     }
-    .nav-btn {
-      flex: 1;
-      background: none;
-      border: none;
-      color: var(--text-muted);
-      font-size: 0.82rem;
-      font-weight: 600;
+
+    .nav-item {
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      gap: 4px;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      text-decoration: none;
       cursor: pointer;
+      flex: 1;
+      padding: 4px 0;
     }
-    .nav-btn.active { color: var(--accent); }
-    .nav-btn svg { width: 20px; height: 20px; fill: currentColor; }
 
-    .badge {
-      display: inline-block;
-      padding: 3px 8px;
-      border-radius: 12px;
-      font-size: 0.72rem;
-      font-weight: bold;
+    .nav-item.active {
+      color: #3b82f6;
     }
-    .badge-running { background: rgba(16, 185, 129, 0.2); color: var(--green); }
-    .badge-idle { background: rgba(156, 163, 175, 0.2); color: var(--text-muted); }
 
-    .toast {
-      position: fixed;
-      bottom: 75px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #333;
-      color: #fff;
-      padding: 10px 18px;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      display: none;
-      z-index: 30;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    .nav-icon {
+      font-size: 1.2rem;
+      margin-bottom: 2px;
     }
   </style>
 </head>
 <body>
 
   <header>
-    <h1 id="header-title">AC Runtime Tracker</h1>
+    <h1 id="header-title">AC Tracker</h1>
   </header>
-
-  <div id="toast" class="toast">Report copied to clipboard!</div>
 
   <!-- TAB 1: AC TRACKER -->
   <div id="tab-ac" class="tab-content active">
-    <div class="card">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
-        <span class="card-title" style="margin: 0;">AC Live State</span>
-        <span id="ac-status-badge" class="badge badge-idle">OFF</span>
-      </div>
-      <button id="ac-toggle-btn" class="btn btn-green" onclick="toggleAC()">LOG ON (Start Session)</button>
-      <div id="active-session-info" style="margin-top: 10px; font-size: 0.85rem; color: var(--text-muted); text-align: center;">
-        Last turned OFF at 03:05 PM
-      </div>
-    </div>
-
-    <!-- Today's Sessions List -->
-    <div class="card">
-      <div class="card-title">Today's Sessions (Oct 31)</div>
-      <ul class="log-list" id="today-sessions-list"></ul>
+    <div class="card" style="text-align: center; padding: 24px 16px;">
+      <div id="ac-status" style="font-size: 0.9rem; font-weight: 700; color: var(--text-muted); margin-bottom: 8px;">STATUS: OFF</div>
+      <div id="current-timer" style="font-size: 2.4rem; font-weight: 800; font-variant-numeric: tabular-nums; margin-bottom: 16px;">00:00:00</div>
+      <button id="toggle-ac-btn" class="btn btn-green" onclick="toggleAC()">LOG ON</button>
     </div>
 
     <div class="card">
-      <div class="card-title">Today's Progress (Weekend)</div>
-      <div class="stat-grid">
+      <div class="card-title">Cycle AC Runtime</div>
+      <div class="grid-2">
         <div class="stat-box">
-          <div class="stat-label">Daily Budget</div>
-          <div class="stat-val" id="today-target">4h 00m</div>
+          <div class="stat-sub">Total Runtime</div>
+          <div id="ac-total-time" class="stat-val">0h 0m</div>
+          <div id="ac-est-cost" class="stat-sub">₹0 - ₹0</div>
         </div>
         <div class="stat-box">
-          <div class="stat-label">Used Today</div>
-          <div class="stat-val" id="today-used" style="color: var(--accent);">2h 54m</div>
-        </div>
-        <div class="stat-box full-width">
-          <div class="stat-label">Remaining Target Today</div>
-          <div class="stat-val" id="today-remaining" style="color: var(--green);">1h 06m</div>
+          <div class="stat-sub">Daily Average</div>
+          <div id="ac-daily-avg" class="stat-val">0h 0m</div>
+          <div id="ac-cycle-days" class="stat-sub">0 days</div>
         </div>
       </div>
     </div>
 
     <div class="card">
-      <div class="card-title">Cycle Running Totals (From Oct 8)</div>
-      <div class="stat-grid">
-        <div class="stat-box">
-          <div class="stat-label">Total Runtime</div>
-          <div class="stat-val" id="cycle-total-hours">77h 41m</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-label">Daily Average</div>
-          <div class="stat-val" id="cycle-daily-avg">3h 14m</div>
-        </div>
-        <div class="stat-box full-width">
-          <div class="stat-label">Estimated AC Power Cost (₹8/unit)</div>
-          <div class="stat-val" id="cycle-ac-cost" style="color: var(--orange);">₹497 - ₹746</div>
-          <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 4px;">62.1 – 93.2 estimated units (0.8–1.2 u/hr)</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Add Manual 4-Digit Time (HHMM)</div>
-      <div style="display: flex; gap: 8px;">
-        <input type="text" id="manual-ac-time" class="input-field" placeholder="e.g. 0345" maxlength="4">
-        <select id="manual-ac-type" class="input-field" style="width: 95px;">
-          <option value="ON">ON</option>
-          <option value="OFF">OFF</option>
-        </select>
-        <button class="btn btn-blue" style="width: 80px;" onclick="addManualACTime()">Log</button>
-      </div>
+      <div class="card-title">Recent AC Sessions</div>
+      <div id="ac-history-list"></div>
     </div>
   </div>
 
-  <!-- TAB 2: METER & RENT TRACKER -->
+  <!-- TAB 2: RENT & METER -->
   <div id="tab-meter" class="tab-content">
-    <div class="card" style="border-left: 4px solid var(--accent);">
-      <div class="card-title">Provisional November Bill</div>
-      <div style="display: flex; flex-direction: column; gap: 8px; font-size: 0.95rem; margin-bottom: 12px;">
-        <div style="display: flex; justify-content: space-between;">
-          <span>Monthly Rent:</span>
-          <span>₹12,000</span>
-        </div>
-        <div style="display: flex; justify-content: space-between;">
-          <span>Water Charges (3 × ₹100):</span>
-          <span>₹300</span>
-        </div>
-        <div style="display: flex; justify-content: space-between;">
-          <span>Electricity (<span id="bill-units">171</span> units @ ₹8):</span>
-          <span id="bill-power" style="color: var(--orange);">₹1,368</span>
-        </div>
-        <div style="height: 1px; background: var(--border); margin: 4px 0;"></div>
-        <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 1.15rem;">
-          <span>Total Payable:</span>
-          <span id="bill-total" style="color: var(--green);">₹13,668</span>
-        </div>
-      </div>
-      <div style="font-size: 0.72rem; color: var(--text-muted); text-align: right;">Baseline: 115 units on Oct 8, 2026</div>
-    </div>
-
     <div class="card">
-      <div class="card-title">Log New Meter Reading</div>
-      <div class="input-group">
-        <label>Meter Reading Value (Units)</label>
-        <input type="number" id="meter-input" class="input-field" placeholder="e.g. 295">
-      </div>
-      <div class="input-group">
-        <label>Reading Date</label>
-        <input type="date" id="meter-date" class="input-field">
-      </div>
-      <button class="btn btn-blue" onclick="addMeterReading()">Save Reading</button>
+      <div class="card-title">Add Reading</div>
+      <label>Reading Date</label>
+      <input type="date" id="meter-date">
+      <label>Meter Units</label>
+      <input type="number" id="meter-val" placeholder="e.g. 294" step="any">
+      <button class="btn btn-primary" onclick="saveMeterReading()">Save Reading</button>
     </div>
 
     <div class="card">
       <div class="card-title">Monthly Export & Backup</div>
-      <div style="display: flex; flex-direction: column; gap: 8px;">
-        <button class="btn btn-blue" onclick="copyReport()">
-          <svg style="width:16px;height:16px;fill:currentColor;" viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
-          Copy Monthly Report for Gemini
-        </button>
-        <button class="btn btn-subtle" onclick="downloadJSON()">
-          <svg style="width:16px;height:16px;fill:currentColor;" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-          Download Backup (.json)
-        </button>
-      </div>
+      <button class="btn btn-primary" onclick="copyMonthlyReport()">📋 Copy Monthly Report for Gemini</button>
+      <button class="btn btn-subtle" onclick="downloadBackup()">📥 Download Backup (.json)</button>
     </div>
 
     <div class="card">
       <div class="card-title">Consumption Analytics</div>
-      <div class="stat-grid">
+      <div class="grid-2">
         <div class="stat-box">
-          <div class="stat-label">Daily Avg Rate</div>
-          <div class="stat-val" id="meter-avg-rate">7.43 u/d</div>
-          <div class="stat-label" id="meter-avg-cost">₹59.48/day</div>
+          <div class="stat-sub">Daily Avg Rate</div>
+          <div id="analytics-daily" class="stat-val">0 u/d</div>
+          <div id="analytics-daily-cost" class="stat-sub">₹0.00/day</div>
         </div>
         <div class="stat-box">
-          <div class="stat-label">Projected 30-Day</div>
-          <div class="stat-val" id="meter-proj-units">223.0 u</div>
-          <div class="stat-label" id="meter-proj-cost">₹1,784</div>
+          <div class="stat-sub">Projected 30-Day</div>
+          <div id="analytics-proj" class="stat-val">0 u</div>
+          <div id="analytics-proj-cost" class="stat-sub">₹0</div>
         </div>
       </div>
     </div>
 
     <div class="card">
       <div class="card-title">Meter Reading History</div>
-      <ul class="log-list" id="meter-history-list"></ul>
+      <div id="meter-history-list"></div>
     </div>
   </div>
 
-  <nav class="bottom-nav">
-    <button class="nav-btn active" onclick="switchTab('ac')">
-      <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1010 10A10 10 0 0012 2zm1 15h-2v-6h2zm0-8h-2V7h2z"/></svg>
-      AC Tracker
-    </button>
-    <button class="nav-btn" onclick="switchTab('meter')">
-      <svg viewBox="0 0 24 24"><path d="M13 2.05v3.03c3.39.49 6 3.39 6 6.92 0 .9-.18 1.75-.48 2.54l2.6 1.53c.56-1.24.88-2.62.88-4.07 0-5.18-3.95-9.45-9-9.95zM12 19c-3.87 0-7-3.13-7-7 0-3.53 2.61-6.43 6-6.92V2.05c-5.05.5-9 4.77-9 9.95 0 5.52 4.47 10 10 10 2.35 0 4.5-.81 6.21-2.18l-2.17-1.74C14.86 18.63 13.5 19 12 19z"/></svg>
-      Rent & Meter
-    </button>
+  <nav class="nav-bar">
+    <div class="nav-item active" id="nav-ac" onclick="switchTab('ac')">
+      <div class="nav-icon">❄️</div>
+      <div>AC Tracker</div>
+    </div>
+    <div class="nav-item" id="nav-meter" onclick="switchTab('meter')">
+      <div class="nav-icon">⚡</div>
+      <div>Rent & Meter</div>
+    </div>
   </nav>
 
   <script>
-    const BASELINE_UNITS = 115;
-    const BASELINE_DATE = new Date("2026-10-08T08:00:00");
-    const RATE_PER_UNIT = 8;
-    const RENT_AMOUNT = 12000;
-    const WATER_AMOUNT = 300;
-
-    let appData = {
-      ac: {
-        activeSessionStart: null,
-        lastOffTime: "03:05 PM",
-        todaySessions: [
-          { start: "12:00 AM", end: "01:07 AM", dur: 67 },
-          { start: "08:52 AM", end: "09:48 AM", dur: 56 },
-          { start: "02:14 PM", end: "03:05 PM", dur: 51 }
-        ],
-        pastDaysMinutes: 4487,
-        totalDaysCount: 24
-      },
-      meter: [
-        { date: "2026-10-08", reading: 115, delta: 0 },
-        { date: "2026-10-11", reading: 145, delta: 30 },
-        { date: "2026-10-15", reading: 179, delta: 34 },
-        { date: "2026-10-19", reading: 207, delta: 28 },
-        { date: "2026-10-21", reading: 221, delta: 14 },
-        { date: "2026-10-27", reading: 263, delta: 42 },
-        { date: "2026-10-31", reading: 286, delta: 23 }
-      ]
+    const CONFIG = {
+      ratePerUnit: 8,
+      rent: 12000,
+      water: 300,
+      acKwMin: 0.8,
+      acKwMax: 1.2
     };
 
-    function loadData() {
-      const saved = localStorage.getItem("tracker_app_storage_v4");
-      if (saved) {
-        try { appData = JSON.parse(saved); } catch (e) { console.error(e); }
-      }
-      document.getElementById('meter-date').value = new Date().toISOString().split('T')[0];
-      renderAC();
-      renderMeter();
-    }
+    let acSessions = JSON.parse(localStorage.getItem('acSessions') || '[]');
+    let meterReadings = JSON.parse(localStorage.getItem('meterReadings') || '[]');
+    let currentSession = JSON.parse(localStorage.getItem('currentSession') || 'null');
+    let timerInterval = null;
 
-    function saveData() {
-      localStorage.setItem("tracker_app_storage_v4", JSON.stringify(appData));
+    function init() {
+      // Seed default baseline if completely empty
+      if (meterReadings.length === 0) {
+        meterReadings = [{ date: '2026-10-08', units: 115 }];
+        saveMeterData();
+      }
+
+      document.getElementById('meter-date').value = new Date().toISOString().split('T')[0];
+
+      if (currentSession) {
+        startTimerDisplay();
+      }
+
+      renderAC();
+      renderMeterHistory();
     }
 
     function switchTab(tab) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
 
       if (tab === 'ac') {
         document.getElementById('tab-ac').classList.add('active');
-        document.querySelectorAll('.nav-btn')[0].classList.add('active');
-        document.getElementById('header-title').innerText = "AC Runtime Tracker";
+        document.getElementById('nav-ac').classList.add('active');
+        document.getElementById('header-title').innerText = 'AC Tracker';
       } else {
         document.getElementById('tab-meter').classList.add('active');
-        document.querySelectorAll('.nav-btn')[1].classList.add('active');
-        document.getElementById('header-title').innerText = "Electricity Meter & Rent";
+        document.getElementById('nav-meter').classList.add('active');
+        document.getElementById('header-title').innerText = 'Electricity Meter & Rent';
       }
     }
 
-    function isWeekend(date) {
-      const day = date.getDay();
-      return day === 0 || day === 6;
-    }
-
+    /* AC TIMER FUNCTIONS */
     function toggleAC() {
-      const now = new Date();
-      if (!appData.ac.activeSessionStart) {
-        appData.ac.activeSessionStart = now.getTime();
+      if (!currentSession) {
+        currentSession = { startTime: new Date().toISOString() };
+        localStorage.setItem('currentSession', JSON.stringify(currentSession));
+        startTimerDisplay();
       } else {
-        const start = new Date(appData.ac.activeSessionStart);
-        const diffMins = Math.max(1, Math.round((now - start) / 60000));
-        const endTimeStr = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-        appData.ac.todaySessions.push({
-          start: start.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
-          end: endTimeStr,
-          dur: diffMins
-        });
-        appData.ac.lastOffTime = endTimeStr;
-        appData.ac.activeSessionStart = null;
+        const endTime = new Date().toISOString();
+        const durationMin = Math.round((new Date(endTime) - new Date(currentSession.startTime)) / 60000);
+        if (durationMin > 0) {
+          acSessions.unshift({
+            date: currentSession.startTime.split('T')[0],
+            start: currentSession.startTime,
+            end: endTime,
+            duration: durationMin
+          });
+          localStorage.setItem('acSessions', JSON.stringify(acSessions));
+        }
+        currentSession = null;
+        localStorage.removeItem('currentSession');
+        clearInterval(timerInterval);
+        document.getElementById('current-timer').innerText = '00:00:00';
+        document.getElementById('ac-status').innerText = 'STATUS: OFF';
+        document.getElementById('ac-status').style.color = 'var(--text-muted)';
+        const btn = document.getElementById('toggle-ac-btn');
+        btn.innerText = 'LOG ON';
+        btn.className = 'btn btn-green';
       }
-      saveData();
       renderAC();
     }
 
-    function addManualACTime() {
-      const input = document.getElementById('manual-ac-time').value.trim();
-      const type = document.getElementById('manual-ac-type').value;
-      if (input.length !== 4 || isNaN(input)) {
-        alert("Enter a valid 4-digit time in HHMM format (e.g. 0345)");
-        return;
-      }
-      const h = parseInt(input.substring(0, 2), 10);
-      const m = parseInt(input.substring(2, 4), 10);
-      const manualDate = new Date();
-      manualDate.setHours(h, m, 0, 0);
+    function startTimerDisplay() {
+      const btn = document.getElementById('toggle-ac-btn');
+      btn.innerText = 'LOG OFF';
+      btn.className = 'btn btn-red';
+      document.getElementById('ac-status').innerText = 'STATUS: ACTIVE (RUNNING)';
+      document.getElementById('ac-status').style.color = 'var(--green)';
 
-      if (type === "ON") {
-        appData.ac.activeSessionStart = manualDate.getTime();
-      } else {
-        if (!appData.ac.activeSessionStart) {
-          alert("Cannot log OFF without an active ON session.");
-          return;
-        }
-        const start = new Date(appData.ac.activeSessionStart);
-        let diff = Math.round((manualDate - start) / 60000);
-        if (diff < 0) diff += 1440;
-        const endTimeStr = manualDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-        appData.ac.todaySessions.push({
-          start: start.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
-          end: endTimeStr,
-          dur: diff
-        });
-        appData.ac.lastOffTime = endTimeStr;
-        appData.ac.activeSessionStart = null;
-      }
-      document.getElementById('manual-ac-time').value = "";
-      saveData();
-      renderAC();
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        const diffMs = new Date() - new Date(currentSession.startTime);
+        const hrs = String(Math.floor(diffMs / 3600000)).padStart(2, '0');
+        const mins = String(Math.floor((diffMs % 3600000) / 60000)).padStart(2, '0');
+        const secs = String(Math.floor((diffMs % 60000) / 1000)).padStart(2, '0');
+        document.getElementById('current-timer').innerText = `${hrs}:${mins}:${secs}`;
+      }, 1000);
     }
 
     function renderAC() {
-      const now = new Date();
-      const targetMins = isWeekend(now) ? 240 : 300;
-      document.getElementById('today-target').innerText = isWeekend(now) ? "4h 00m" : "5h 00m";
+      let totalMins = acSessions.reduce((acc, s) => acc + (s.duration || 0), 0);
+      let hours = Math.floor(totalMins / 60);
+      let mins = totalMins % 60;
+      document.getElementById('ac-total-time').innerText = `${hours}h ${mins}m`;
 
-      let todayCompletedMins = appData.ac.todaySessions.reduce((acc, s) => acc + s.dur, 0);
-      let liveMins = 0;
+      const kwhMin = (totalMins / 60) * CONFIG.acKwMin;
+      const kwhMax = (totalMins / 60) * CONFIG.acKwMax;
+      const costMin = Math.round(kwhMin * CONFIG.ratePerUnit);
+      const costMax = Math.round(kwhMax * CONFIG.ratePerUnit);
+      document.getElementById('ac-est-cost').innerText = `₹${costMin} - ₹${costMax}`;
 
-      const btn = document.getElementById('ac-toggle-btn');
-      const badge = document.getElementById('ac-status-badge');
-      const info = document.getElementById('active-session-info');
+      const cycleDays = meterReadings.length > 1 ? 
+        Math.max(1, Math.round((new Date(meterReadings[meterReadings.length - 1].date) - new Date(meterReadings[0].date)) / (1000 * 60 * 60 * 24))) : 1;
+      
+      const avgMins = Math.round(totalMins / cycleDays);
+      document.getElementById('ac-daily-avg').innerText = `${Math.floor(avgMins / 60)}h ${avgMins % 60}m`;
+      document.getElementById('ac-cycle-days').innerText = `${cycleDays} days`;
 
-      if (appData.ac.activeSessionStart) {
-        badge.className = "badge badge-running";
-        badge.innerText = "RUNNING";
-        btn.className = "btn btn-red";
-        btn.innerText = "LOG OFF (Stop Session)";
-        const startDate = new Date(appData.ac.activeSessionStart);
-        liveMins = Math.max(0, Math.round((now - startDate) / 60000));
-        info.style.display = "block";
-        const remBudget = Math.max(0, targetMins - todayCompletedMins);
-        const cutoffDate = new Date(startDate.getTime() + remBudget * 60000);
-        const cutoffTimeStr = cutoffDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-        info.innerText = `Active since ${startDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} (${liveMins}m run) | Cutoff: ${cutoffTimeStr}`;
-      } else {
-        badge.className = "badge badge-idle";
-        badge.innerText = "OFF";
-        btn.className = "btn btn-green";
-        btn.innerText = "LOG ON (Start Session)";
-        info.style.display = "block";
-        info.innerText = appData.ac.lastOffTime ? `Last turned OFF at ${appData.ac.lastOffTime}` : `AC is currently idle`;
-      }
-
-      const totalToday = todayCompletedMins + liveMins;
-      const rem = Math.max(0, targetMins - totalToday);
-
-      document.getElementById('today-used').innerText = `${Math.floor(totalToday / 60)}h ${String(totalToday % 60).padStart(2, '0')}m`;
-      document.getElementById('today-remaining').innerText = `${Math.floor(rem / 60)}h ${String(rem % 60).padStart(2, '0')}m`;
-
-      const cycleTotalMins = appData.ac.pastDaysMinutes + totalToday;
-      const cycleHours = cycleTotalMins / 60;
-      document.getElementById('cycle-total-hours').innerText = `${Math.floor(cycleTotalMins / 60)}h ${String(cycleTotalMins % 60).padStart(2, '0')}m`;
-
-      const avgMins = cycleTotalMins / appData.ac.totalDaysCount;
-      document.getElementById('cycle-daily-avg').innerText = `${Math.floor(avgMins / 60)}h ${String(Math.round(avgMins % 60)).padStart(2, '0')}m`;
-
-      const uLow = (cycleHours * 0.8).toFixed(1);
-      const uHigh = (cycleHours * 1.2).toFixed(1);
-      const costLow = Math.round(uLow * RATE_PER_UNIT);
-      const costHigh = Math.round(uHigh * RATE_PER_UNIT);
-      document.getElementById('cycle-ac-cost').innerText = `₹${costLow} - ₹${costHigh}`;
-
-      // Render today's sessions list
-      const sessList = document.getElementById('today-sessions-list');
-      sessList.innerHTML = "";
-      if (appData.ac.todaySessions.length === 0) {
-        sessList.innerHTML = `<li class="log-item" style="color:var(--text-muted);justify-content:center;">No sessions recorded today yet.</li>`;
-      } else {
-        [...appData.ac.todaySessions].reverse().forEach((s, idx) => {
-          const num = appData.ac.todaySessions.length - idx;
-          const li = document.createElement('li');
-          li.className = "log-item";
-          li.innerHTML = `
-            <div>
-              <strong>Session ${num}</strong>
-              <div style="font-size:0.75rem;color:var(--text-muted);">${s.start} → ${s.end}</div>
-            </div>
-            <div style="font-weight:700;color:var(--accent);">${Math.floor(s.dur/60)}h ${s.dur%60}m</div>
-          `;
-          sessList.appendChild(li);
-        });
-      }
-    }
-
-    function addMeterReading() {
-      const val = parseFloat(document.getElementById('meter-input').value);
-      const date = document.getElementById('meter-date').value;
-      if (!val || !date) {
-        alert("Enter a valid reading and date.");
-        return;
-      }
-      const lastReading = appData.meter[appData.meter.length - 1];
-      if (val < lastReading.reading) {
-        alert(`New reading cannot be lower than previous (${lastReading.reading}).`);
-        return;
-      }
-
-      appData.meter.push({
-        date: date,
-        reading: val,
-        delta: Math.round((val - lastReading.reading) * 100) / 100
-      });
-      document.getElementById('meter-input').value = "";
-      saveData();
-      renderMeter();
-    }
-
-    function renderMeter() {
-      const list = document.getElementById('meter-history-list');
-      list.innerHTML = "";
-      const rev = [...appData.meter].reverse();
-
-      rev.forEach((item) => {
-        const li = document.createElement('li');
-        li.className = "log-item";
-        li.innerHTML = `
+      const list = document.getElementById('ac-history-list');
+      list.innerHTML = acSessions.slice(0, 5).map(s => `
+        <div class="history-item">
           <div>
-            <strong>${item.date}</strong>
-            <div style="font-size: 0.72rem; color: var(--text-muted);">${item.delta > 0 ? '+' + item.delta + ' units' : 'Baseline'}</div>
+            <div style="font-weight: 600;">${s.date}</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">${new Date(s.start).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} - ${new Date(s.end).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
           </div>
-          <div style="font-weight: 700; font-size: 1rem;">${item.reading} u</div>
-        `;
-        list.appendChild(li);
-      });
-
-      const latest = appData.meter[appData.meter.length - 1];
-      const totalUnits = latest.reading - BASELINE_UNITS;
-      const powerCost = totalUnits * RATE_PER_UNIT;
-      const totalBill = RENT_AMOUNT + WATER_AMOUNT + powerCost;
-
-      document.getElementById('bill-units').innerText = totalUnits;
-      document.getElementById('bill-power').innerText = `₹${powerCost.toLocaleString('en-IN')}`;
-      document.getElementById('bill-total').innerText = `₹${totalBill.toLocaleString('en-IN')}`;
-
-      const latestDate = new Date(latest.date);
-      const elapsedDays = Math.max(1, Math.round((latestDate - BASELINE_DATE) / (1000 * 60 * 60 * 24)));
-      const avgRate = totalUnits / elapsedDays;
-      const avgCost = avgRate * RATE_PER_UNIT;
-      const projUnits = avgRate * 30;
-      const projCost = projUnits * RATE_PER_UNIT;
-
-      document.getElementById('meter-avg-rate').innerText = `${avgRate.toFixed(2)} u/d`;
-      document.getElementById('meter-avg-cost').innerText = `₹${avgCost.toFixed(2)}/day`;
-      document.getElementById('meter-proj-units').innerText = `${projUnits.toFixed(1)} u`;
-      document.getElementById('meter-proj-cost').innerText = `₹${Math.round(projCost).toLocaleString('en-IN')}`;
+          <div style="font-weight: 700;">${Math.floor(s.duration / 60)}h ${s.duration % 60}m</div>
+        </div>
+      `).join('') || '<div style="color: var(--text-muted); text-align: center; padding: 12px 0;">No sessions recorded yet.</div>';
     }
 
-    function copyReport() {
-      const latest = appData.meter[appData.meter.length - 1];
-      const totalUnits = latest.reading - BASELINE_UNITS;
-      const powerCost = totalUnits * RATE_PER_UNIT;
-      const totalBill = RENT_AMOUNT + WATER_AMOUNT + powerCost;
+    /* METER & RENT FUNCTIONS */
+    function saveMeterData() {
+      // Automatically keep readings ordered chronologically
+      meterReadings.sort((a, b) => new Date(a.date) - new Date(b.date));
+      localStorage.setItem('meterReadings', JSON.stringify(meterReadings));
+    }
 
-      let historyText = appData.meter.map(m => `- ${m.date}: ${m.reading} units (${m.delta > 0 ? '+' + m.delta : 'Baseline'})`).join("\n");
+    function saveMeterReading() {
+      const date = document.getElementById('meter-date').value;
+      const val = parseFloat(document.getElementById('meter-val').value);
 
-      let report = `### Monthly Double-Check Report
-**Baseline:** 115 units (Oct 8, 2026)
-**Latest Meter Reading:** ${latest.reading} units (${latest.date})
+      if (!date || isNaN(val)) {
+        alert('Please provide a valid date and meter reading.');
+        return;
+      }
+
+      meterReadings.push({ date, units: val });
+      saveMeterData();
+      document.getElementById('meter-val').value = '';
+      renderMeterHistory();
+    }
+
+    function editMeterReading(index) {
+      const item = meterReadings[index];
+      if (!item) return;
+
+      const newDate = prompt("Edit Reading Date (YYYY-MM-DD):", item.date);
+      if (newDate === null) return;
+
+      const newUnits = prompt("Edit Meter Reading (Units):", item.units);
+      if (newUnits === null) return;
+
+      const parsedUnits = parseFloat(newUnits);
+      if (isNaN(parsedUnits)) {
+        alert("Please enter a valid numeric unit value.");
+        return;
+      }
+
+      meterReadings[index].date = newDate.trim();
+      meterReadings[index].units = parsedUnits;
+
+      saveMeterData();
+      renderMeterHistory();
+    }
+
+    function deleteMeterReading(index) {
+      if (confirm(`Delete the reading for ${meterReadings[index].date} (${meterReadings[index].units} u)?`)) {
+        meterReadings.splice(index, 1);
+        saveMeterData();
+        renderMeterHistory();
+      }
+    }
+
+    function renderMeterHistory() {
+      saveMeterData();
+      const list = document.getElementById('meter-history-list');
+
+      if (meterReadings.length === 0) {
+        list.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 12px 0;">No readings logged.</div>';
+        return;
+      }
+
+      // Render descending view with Edit & Delete actions
+      let html = '';
+      for (let i = meterReadings.length - 1; i >= 0; i--) {
+        const item = meterReadings[i];
+        const prev = i > 0 ? meterReadings[i - 1] : null;
+        const diff = prev ? (item.units - prev.units) : 0;
+        const isBaseline = i === 0;
+
+        html += `
+          <div class="history-item">
+            <div>
+              <div style="font-weight: 600;">${item.date}</div>
+              <div style="font-size: 0.8rem; color: var(--text-muted);">
+                ${isBaseline ? 'Baseline' : (diff >= 0 ? '+' + diff.toFixed(1) + ' units' : diff.toFixed(1) + ' units')}
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-weight: 700; margin-right: 4px;">${item.units} u</span>
+              <button class="action-btn edit" onclick="editMeterReading(${i})">✎ Edit</button>
+              <button class="action-btn del" onclick="deleteMeterReading(${i})">✕</button>
+            </div>
+          </div>
+        `;
+      }
+      list.innerHTML = html;
+
+      // Update Analytics
+      if (meterReadings.length > 1) {
+        const first = meterReadings[0];
+        const latest = meterReadings[meterReadings.length - 1];
+        const consumed = latest.units - first.units;
+        const days = Math.max(1, Math.round((new Date(latest.date) - new Date(first.date)) / (1000 * 60 * 60 * 24)));
+        const dailyAvg = (consumed / days);
+        const projected = dailyAvg * 30;
+
+        document.getElementById('analytics-daily').innerText = `${dailyAvg.toFixed(2)} u/d`;
+        document.getElementById('analytics-daily-cost').innerText = `₹${(dailyAvg * CONFIG.ratePerUnit).toFixed(2)}/day`;
+        document.getElementById('analytics-proj').innerText = `${projected.toFixed(1)} u`;
+        document.getElementById('analytics-proj-cost').innerText = `₹${Math.round(projected * CONFIG.ratePerUnit)}`;
+      }
+    }
+
+    /* BACKUP & EXPORT FUNCTIONS */
+    function copyMonthlyReport() {
+      if (meterReadings.length === 0) {
+        alert('No meter readings available.');
+        return;
+      }
+
+      const baseline = meterReadings[0];
+      const latest = meterReadings[meterReadings.length - 1];
+      const totalUnits = latest.units - baseline.units;
+      const elecCost = totalUnits * CONFIG.ratePerUnit;
+      const totalPayable = CONFIG.rent + CONFIG.water + elecCost;
+
+      let totalMins = acSessions.reduce((acc, s) => acc + (s.duration || 0), 0);
+      let hours = Math.floor(totalMins / 60);
+      let mins = totalMins % 60;
+      const days = Math.max(1, Math.round((new Date(latest.date) - new Date(baseline.date)) / (1000 * 60 * 60 * 24)));
+      const avgMins = Math.round(totalMins / days);
+
+      let logStr = meterReadings.map((r, i) => {
+        if (i === 0) return `- ${r.date}: ${r.units} units (Baseline)`;
+        const diff = r.units - meterReadings[i - 1].units;
+        return `- ${r.date}: ${r.units} units (+${diff})`;
+      }).join('\n');
+
+      const report = `### Monthly Double-Check Report
+**Baseline:** ${baseline.units} units (${baseline.date})
+**Latest Meter Reading:** ${latest.units} units (${latest.date})
 **Total Consumption:** ${totalUnits} units
-**Electricity Rate:** ₹${RATE_PER_UNIT}/unit
-**Electricity Cost:** ₹${powerCost}
+**Electricity Rate:** ₹${CONFIG.ratePerUnit}/unit
+**Electricity Cost:** ₹${elecCost}
 
 **Provisional Rent Bill:**
-- Rent: ₹12,000
-- Water: ₹300
-- Electricity: ₹${powerCost}
-- **Total Payable:** ₹${totalBill}
+- Rent: ₹${CONFIG.rent}
+- Water: ₹${CONFIG.water}
+- Electricity: ₹${elecCost}
+- **Total Payable:** ₹${totalPayable}
 
 **Meter Readings Log:**
-${historyText}
+${logStr}
 
 **AC Runtime Cumulative:**
-- Cycle Total Runtime: ${document.getElementById('cycle-total-hours').innerText}
-- Cycle Daily Average: ${document.getElementById('cycle-daily-avg').innerText}
-- Estimated AC Power Cost: ${document.getElementById('cycle-ac-cost').innerText}
-`;
+- Cycle Total Runtime: ${hours}h ${mins}m
+- Cycle Daily Average: ${Math.floor(avgMins / 60)}h ${avgMins % 60}m
+- Estimated AC Power Cost: ₹${Math.round((totalMins / 60) * CONFIG.acKwMin * CONFIG.ratePerUnit)} - ₹${Math.round((totalMins / 60) * CONFIG.acKwMax * CONFIG.ratePerUnit)}`;
 
       navigator.clipboard.writeText(report).then(() => {
-        showToast("Monthly report copied to clipboard!");
-      }).catch(() => {
-        const ta = document.createElement("textarea");
-        ta.value = report;
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand("copy");
-        document.body.removeChild(ta);
-        showToast("Monthly report copied to clipboard!");
+        alert('Monthly report copied to clipboard! Paste it directly into Gemini.');
+      }).catch(err => {
+        alert('Could not copy report: ' + err);
       });
     }
 
-    function downloadJSON() {
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData, null, 2));
-      const downloadAnchor = document.createElement('a');
-      downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", `utility_tracker_backup_${new Date().toISOString().split('T')[0]}.json`);
-      document.body.appendChild(downloadAnchor);
-      downloadAnchor.click();
-      downloadAnchor.remove();
-      showToast("Backup file downloaded!");
+    function downloadBackup() {
+      const data = {
+        acSessions,
+        meterReadings,
+        exportedAt: new Date().toISOString()
+      };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `tracker-backup-${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
     }
 
-    function showToast(msg) {
-      const toast = document.getElementById('toast');
-      toast.innerText = msg;
-      toast.style.display = "block";
-      setTimeout(() => { toast.style.display = "none"; }, 2500);
-    }
-
-    setInterval(renderAC, 30000);
-    window.onload = loadData;
+    window.onload = init;
   </script>
 </body>
 </html>
