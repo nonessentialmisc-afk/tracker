@@ -219,7 +219,6 @@
       align-items: center;
       color: var(--text-muted);
       font-size: 0.75rem;
-      text-decoration: none;
       cursor: pointer;
       flex: 1;
       padding: 4px 0;
@@ -245,26 +244,26 @@
   <div id="tab-ac" class="tab-content active">
     <div class="card" style="text-align: center; padding: 20px 16px;">
       <div id="ac-status" style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">STATUS: OFF</div>
-      <div id="last-off-time" style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">Last turned OFF: 03:05 PM</div>
+      <div id="last-off-time" style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">Last turned OFF: 12:45 AM</div>
       
       <div id="timer-label" style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px;">TODAY RUNTIME</div>
-      <div id="current-timer" style="font-size: 2.6rem; font-weight: 800; font-variant-numeric: tabular-nums; margin-bottom: 14px;">02:54:00</div>
+      <div id="current-timer" style="font-size: 2.6rem; font-weight: 800; font-variant-numeric: tabular-nums; margin-bottom: 14px;">00:45:00</div>
       
       <button id="toggle-ac-btn" class="btn btn-green" onclick="toggleAC()">LOG ON</button>
       
-      <!-- DYNAMIC WEEKDAY/WEEKEND BUDGET -->
+      <!-- DYNAMIC WEEKDAY / WEEKEND BUDGET -->
       <div style="margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; text-align: left;">
         <div>
-          <div style="font-size: 0.75rem; color: var(--text-muted);" id="budget-day-label">Today Budget (Sat)</div>
+          <div style="font-size: 0.75rem; color: var(--text-muted);" id="budget-day-label">Today Budget (Sun)</div>
           <div id="budget-target" style="font-size: 0.95rem; font-weight: 700;">4h 00m</div>
         </div>
         <div style="text-align: center;">
           <div style="font-size: 0.75rem; color: var(--text-muted);">Remaining Today</div>
-          <div id="budget-left" style="font-size: 0.95rem; font-weight: 700; color: var(--green);">1h 06m left</div>
+          <div id="budget-left" style="font-size: 0.95rem; font-weight: 700; color: var(--green);">3h 15m left</div>
         </div>
         <div style="text-align: right;">
           <div style="font-size: 0.75rem; color: var(--text-muted);">Est Today Cost</div>
-          <div id="today-cost" style="font-size: 0.95rem; font-weight: 700; color: var(--text-main);">₹19 - ₹28</div>
+          <div id="today-cost" style="font-size: 0.95rem; font-weight: 700; color: var(--text-main);">₹5 - ₹7</div>
         </div>
       </div>
     </div>
@@ -274,12 +273,12 @@
       <div class="grid-2">
         <div class="stat-box">
           <div class="stat-sub">Total Runtime</div>
-          <div id="ac-total-time" class="stat-val">77h 41m</div>
-          <div id="ac-est-cost" class="stat-sub">₹497 - ₹746</div>
+          <div id="ac-total-time" class="stat-val">78h 51m</div>
+          <div id="ac-est-cost" class="stat-sub">₹505 - ₹757</div>
         </div>
         <div class="stat-box">
           <div class="stat-sub">Daily Average</div>
-          <div id="ac-daily-avg" class="stat-val">3h 14m</div>
+          <div id="ac-daily-avg" class="stat-val">3h 17m</div>
           <div id="ac-cycle-days" class="stat-sub">24 days</div>
         </div>
       </div>
@@ -352,6 +351,13 @@
       weekdayBudgetMins: 300  // 5 hours on Monday to Friday
     };
 
+    function getLocalDateString(d = new Date()) {
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
     const SEED_METER = [
       { date: '2026-10-08', units: 115 },
       { date: '2026-10-11', units: 145 },
@@ -363,8 +369,13 @@
       { date: '2026-10-31', units: 294 }
     ];
 
-    // Seeded sessions sum precisely to 4,661 minutes = 77h 41m
+    // Accurately split across midnight:
+    // Oct 31 11:35 PM to Nov 1 12:45 AM split into:
+    // - 2026-11-01: 12:00 AM - 12:45 AM (45m)
+    // - 2026-10-31: 11:35 PM - 12:00 AM (25m)
     const SEED_SESSIONS = [
+      { date: '2026-11-01', start: '2026-11-01T00:00:00', end: '2026-11-01T00:45:00', duration: 45 },
+      { date: '2026-10-31', start: '2026-10-31T23:35:00', end: '2026-10-31T23:59:59', duration: 25 },
       { date: '2026-10-31', start: '2026-10-31T14:14:00', end: '2026-10-31T15:05:00', duration: 51 },
       { date: '2026-10-31', start: '2026-10-31T11:45:00', end: '2026-10-31T13:00:00', duration: 75 },
       { date: '2026-10-31', start: '2026-10-31T09:00:00', end: '2026-10-31T09:48:00', duration: 48 },
@@ -399,8 +410,8 @@
     let timerInterval = null;
 
     function init() {
-      // Overwrite/seed with calibrated history to fix the 77h 41m baseline
-      if (!acSessions || acSessions.length < 20 || acSessions[0].duration !== 51) {
+      // Overwrite previous unsplit sessions
+      if (!acSessions || acSessions.length < 25 || acSessions[0].date !== '2026-11-01') {
         acSessions = SEED_SESSIONS;
         localStorage.setItem('acSessions', JSON.stringify(acSessions));
       }
@@ -410,7 +421,7 @@
         saveMeterData();
       }
 
-      document.getElementById('meter-date').value = new Date().toISOString().split('T')[0];
+      document.getElementById('meter-date').value = getLocalDateString();
 
       if (currentSession) {
         startTimerDisplay();
@@ -443,7 +454,7 @@
     }
 
     function getTodayMinutes() {
-      const todayStr = new Date().toISOString().split('T')[0];
+      const todayStr = getLocalDateString();
       return acSessions
         .filter(s => s.date === todayStr)
         .reduce((sum, s) => sum + (s.duration || 0), 0);
@@ -466,24 +477,54 @@
       }
     }
 
-    /* AC TIMER FUNCTIONS */
+    /* AC TIMER FUNCTIONS WITH AUTOMATIC MIDNIGHT SPLITTING */
     function toggleAC() {
       if (!currentSession) {
         currentSession = { startTime: new Date().toISOString() };
         localStorage.setItem('currentSession', JSON.stringify(currentSession));
         startTimerDisplay();
       } else {
-        const endTime = new Date().toISOString();
-        const durationMin = Math.round((new Date(endTime) - new Date(currentSession.startTime)) / 60000);
-        if (durationMin > 0) {
+        const start = new Date(currentSession.startTime);
+        const end = new Date();
+
+        const startDateStr = getLocalDateString(start);
+        const endDateStr = getLocalDateString(end);
+
+        if (startDateStr === endDateStr) {
+          // Regular same-day session
+          const durationMin = Math.round((end - start) / 60000);
+          if (durationMin > 0) {
+            acSessions.unshift({
+              date: startDateStr,
+              start: currentSession.startTime,
+              end: end.toISOString(),
+              duration: durationMin
+            });
+          }
+        } else {
+          // Session crossed midnight! Split across days:
+          const midnight = new Date(end.getFullYear(), end.getMonth(), end.getDate(), 0, 0, 0, 0);
+          const durBeforeMidnight = Math.max(1, Math.round((midnight - start) / 60000));
+          const durAfterMidnight = Math.max(0, Math.round((end - midnight) / 60000));
+
+          if (durAfterMidnight > 0) {
+            acSessions.unshift({
+              date: endDateStr,
+              start: midnight.toISOString(),
+              end: end.toISOString(),
+              duration: durAfterMidnight
+            });
+          }
+
           acSessions.unshift({
-            date: currentSession.startTime.split('T')[0],
+            date: startDateStr,
             start: currentSession.startTime,
-            end: endTime,
-            duration: durationMin
+            end: new Date(midnight.getTime() - 1000).toISOString(),
+            duration: durBeforeMidnight
           });
-          localStorage.setItem('acSessions', JSON.stringify(acSessions));
         }
+
+        localStorage.setItem('acSessions', JSON.stringify(acSessions));
         currentSession = null;
         localStorage.removeItem('currentSession');
         clearInterval(timerInterval);
@@ -530,9 +571,9 @@
       document.getElementById('ac-daily-avg').innerText = `${Math.floor(avgMins / 60)}h ${avgMins % 60}m`;
       document.getElementById('ac-cycle-days').innerText = `${cycleDays} days`;
 
-      // Dynamic Weekday vs Weekend Budget Calculation
+      // Weekday vs Weekend Budget with Local Time
       const today = new Date();
-      const dayOfWeek = today.getDay(); // 0 is Sunday, 6 is Saturday
+      const dayOfWeek = today.getDay(); // 0 is Sun, 6 is Sat
       const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
       const targetBudgetMins = isWeekend ? CONFIG.weekendBudgetMins : CONFIG.weekdayBudgetMins;
       const dayName = isWeekend ? (dayOfWeek === 0 ? 'Sun' : 'Sat') : 'Weekday';
