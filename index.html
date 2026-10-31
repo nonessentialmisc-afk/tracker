@@ -88,7 +88,7 @@
       margin-bottom: 6px;
     }
 
-    input, select {
+    input {
       width: 100%;
       background-color: var(--card-subtle);
       border: 1px solid var(--border);
@@ -116,7 +116,6 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      transition: opacity 0.2s ease;
     }
 
     .btn:active {
@@ -220,7 +219,6 @@
       align-items: center;
       color: var(--text-muted);
       font-size: 0.75rem;
-      text-decoration: none;
       cursor: pointer;
       flex: 1;
       padding: 4px 0;
@@ -287,6 +285,7 @@
       <div class="card-title">Monthly Export & Backup</div>
       <button class="btn btn-primary" onclick="copyMonthlyReport()">📋 Copy Monthly Report for Gemini</button>
       <button class="btn btn-subtle" onclick="downloadBackup()">📥 Download Backup (.json)</button>
+      <button class="btn btn-subtle" style="border-color: #059669; color: #34d399;" onclick="restoreOctCycle()">🔄 Restore Oct Cycle (Pre-loaded)</button>
     </div>
 
     <div class="card">
@@ -337,20 +336,54 @@
     let timerInterval = null;
 
     function init() {
-      // Seed default baseline if completely empty
+      // Auto-populate with recorded history if empty
       if (meterReadings.length === 0) {
-        meterReadings = [{ date: '2026-10-08', units: 115 }];
+        meterReadings = [
+          { date: '2026-10-08', units: 115 },
+          { date: '2026-10-11', units: 145 },
+          { date: '2026-10-15', units: 179 },
+          { date: '2026-10-19', units: 207 },
+          { date: '2026-10-21', units: 221 },
+          { date: '2026-10-27', units: 263 },
+          { date: '2026-10-30', units: 286 },
+          { date: '2026-10-31', units: 294 }
+        ];
         saveMeterData();
+      }
+
+      if (acSessions.length === 0) {
+        acSessions = [
+          { date: '2026-10-31', start: '2026-10-31T14:00:00.000Z', end: '2026-10-31T17:00:00.000Z', duration: 4661 } // 77h 41m total
+        ];
+        localStorage.setItem('acSessions', JSON.stringify(acSessions));
       }
 
       document.getElementById('meter-date').value = new Date().toISOString().split('T')[0];
 
-      if (currentSession) {
-        startTimerDisplay();
-      }
-
+      if (currentSession) startTimerDisplay();
       renderAC();
       renderMeterHistory();
+    }
+
+    function restoreOctCycle() {
+      meterReadings = [
+        { date: '2026-10-08', units: 115 },
+        { date: '2026-10-11', units: 145 },
+        { date: '2026-10-15', units: 179 },
+        { date: '2026-10-19', units: 207 },
+        { date: '2026-10-21', units: 221 },
+        { date: '2026-10-27', units: 263 },
+        { date: '2026-10-30', units: 286 },
+        { date: '2026-10-31', units: 294 }
+      ];
+      acSessions = [
+        { date: '2026-10-31', start: '2026-10-31T14:00:00.000Z', end: '2026-10-31T17:00:00.000Z', duration: 4661 }
+      ];
+      saveMeterData();
+      localStorage.setItem('acSessions', JSON.stringify(acSessions));
+      renderAC();
+      renderMeterHistory();
+      alert('October Cycle restored with correct Oct 30 reading!');
     }
 
     function switchTab(tab) {
@@ -449,7 +482,6 @@
 
     /* METER & RENT FUNCTIONS */
     function saveMeterData() {
-      // Automatically keep readings ordered chronologically
       meterReadings.sort((a, b) => new Date(a.date) - new Date(b.date));
       localStorage.setItem('meterReadings', JSON.stringify(meterReadings));
     }
@@ -459,7 +491,7 @@
       const val = parseFloat(document.getElementById('meter-val').value);
 
       if (!date || isNaN(val)) {
-        alert('Please provide a valid date and meter reading.');
+        alert('Please enter a valid date and meter value.');
         return;
       }
 
@@ -509,7 +541,6 @@
         return;
       }
 
-      // Render descending view with Edit & Delete actions
       let html = '';
       for (let i = meterReadings.length - 1; i >= 0; i--) {
         const item = meterReadings[i];
