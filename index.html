@@ -168,6 +168,24 @@
       color: var(--text-muted);
     }
 
+    .bill-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .bill-row.total {
+      border-top: 1px solid var(--border);
+      padding-top: 10px;
+      margin-top: 8px;
+      color: var(--text-main);
+      font-weight: 700;
+      font-size: 1.05rem;
+    }
+
     .history-item {
       display: flex;
       justify-content: space-between;
@@ -244,26 +262,25 @@
   <div id="tab-ac" class="tab-content active">
     <div class="card" style="text-align: center; padding: 20px 16px;">
       <div id="ac-status" style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">STATUS: OFF</div>
-      <div id="last-off-time" style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">Last turned OFF: 12:45 AM</div>
+      <div id="last-off-time" style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">Last turned OFF: --</div>
       
       <div id="timer-label" style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px;">TODAY RUNTIME</div>
-      <div id="current-timer" style="font-size: 2.6rem; font-weight: 800; font-variant-numeric: tabular-nums; margin-bottom: 14px;">00:45:00</div>
+      <div id="current-timer" style="font-size: 2.6rem; font-weight: 800; font-variant-numeric: tabular-nums; margin-bottom: 14px;">00:00:00</div>
       
       <button id="toggle-ac-btn" class="btn btn-green" onclick="toggleAC()">LOG ON</button>
       
-      <!-- DYNAMIC WEEKDAY / WEEKEND BUDGET -->
       <div style="margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; text-align: left;">
         <div>
-          <div style="font-size: 0.75rem; color: var(--text-muted);" id="budget-day-label">Today Budget (Sun)</div>
+          <div style="font-size: 0.75rem; color: var(--text-muted);" id="budget-day-label">Today Budget</div>
           <div id="budget-target" style="font-size: 0.95rem; font-weight: 700;">4h 00m</div>
         </div>
         <div style="text-align: center;">
           <div style="font-size: 0.75rem; color: var(--text-muted);">Remaining Today</div>
-          <div id="budget-left" style="font-size: 0.95rem; font-weight: 700; color: var(--green);">3h 15m left</div>
+          <div id="budget-left" style="font-size: 0.95rem; font-weight: 700; color: var(--green);">--</div>
         </div>
         <div style="text-align: right;">
           <div style="font-size: 0.75rem; color: var(--text-muted);">Est Today Cost</div>
-          <div id="today-cost" style="font-size: 0.95rem; font-weight: 700; color: var(--text-main);">₹5 - ₹7</div>
+          <div id="today-cost" style="font-size: 0.95rem; font-weight: 700; color: var(--text-main);">₹0 - ₹0</div>
         </div>
       </div>
     </div>
@@ -273,13 +290,13 @@
       <div class="grid-2">
         <div class="stat-box">
           <div class="stat-sub">Total Runtime</div>
-          <div id="ac-total-time" class="stat-val">78h 51m</div>
-          <div id="ac-est-cost" class="stat-sub">₹505 - ₹757</div>
+          <div id="ac-total-time" class="stat-val">0h 0m</div>
+          <div id="ac-est-cost" class="stat-sub">₹0 - ₹0</div>
         </div>
         <div class="stat-box">
           <div class="stat-sub">Daily Average</div>
-          <div id="ac-daily-avg" class="stat-val">3h 17m</div>
-          <div id="ac-cycle-days" class="stat-sub">24 days</div>
+          <div id="ac-daily-avg" class="stat-val">0h 0m</div>
+          <div id="ac-cycle-days" class="stat-sub">0 days</div>
         </div>
       </div>
     </div>
@@ -297,8 +314,32 @@
       <label>Reading Date</label>
       <input type="date" id="meter-date">
       <label>Meter Units</label>
-      <input type="number" id="meter-val" placeholder="e.g. 294" step="any">
+      <input type="number" id="meter-val" placeholder="e.g. 297" step="any">
       <button class="btn btn-primary" onclick="saveMeterReading()">Save Reading</button>
+    </div>
+
+    <!-- PROVISIONAL BILL CARD -->
+    <div class="card" style="border: 1px solid #1e3a8a; background: linear-gradient(180deg, #1e1e1e 0%, #172033 100%);">
+      <div class="card-title" style="color: #60a5fa; display: flex; justify-content: space-between;">
+        <span>Provisional Bill (As of Latest Reading)</span>
+        <span id="bill-date-tag" style="text-transform: none; font-weight: 600;">--</span>
+      </div>
+      <div class="bill-row">
+        <span>Rent</span>
+        <span id="bill-rent-val">₹12,000</span>
+      </div>
+      <div class="bill-row">
+        <span>Water</span>
+        <span id="bill-water-val">₹300</span>
+      </div>
+      <div class="bill-row">
+        <span id="bill-elec-label">Electricity (0 units @ ₹8)</span>
+        <span id="bill-elec-val" style="color: #60a5fa;">₹0</span>
+      </div>
+      <div class="bill-row total">
+        <span>Total Payable</span>
+        <span id="bill-total-val" style="color: var(--green); font-size: 1.25rem;">₹12,300</span>
+      </div>
     </div>
 
     <div class="card">
@@ -366,13 +407,10 @@
       { date: '2026-10-21', units: 221 },
       { date: '2026-10-27', units: 263 },
       { date: '2026-10-30', units: 286 },
-      { date: '2026-10-31', units: 294 }
+      { date: '2026-10-31', units: 294 },
+      { date: '2026-11-01', units: 297 }
     ];
 
-    // Accurately split across midnight:
-    // Oct 31 11:35 PM to Nov 1 12:45 AM split into:
-    // - 2026-11-01: 12:00 AM - 12:45 AM (45m)
-    // - 2026-10-31: 11:35 PM - 12:00 AM (25m)
     const SEED_SESSIONS = [
       { date: '2026-11-01', start: '2026-11-01T00:00:00', end: '2026-11-01T00:45:00', duration: 45 },
       { date: '2026-10-31', start: '2026-10-31T23:35:00', end: '2026-10-31T23:59:59', duration: 25 },
@@ -410,13 +448,12 @@
     let timerInterval = null;
 
     function init() {
-      // Overwrite previous unsplit sessions
-      if (!acSessions || acSessions.length < 25 || acSessions[0].date !== '2026-11-01') {
+      if (!acSessions || acSessions.length < 25) {
         acSessions = SEED_SESSIONS;
         localStorage.setItem('acSessions', JSON.stringify(acSessions));
       }
 
-      if (!meterReadings || meterReadings.length < 8) {
+      if (!meterReadings || meterReadings.length < 9) {
         meterReadings = SEED_METER;
         saveMeterData();
       }
@@ -477,7 +514,7 @@
       }
     }
 
-    /* AC TIMER FUNCTIONS WITH AUTOMATIC MIDNIGHT SPLITTING */
+    /* AC TIMER FUNCTIONS */
     function toggleAC() {
       if (!currentSession) {
         currentSession = { startTime: new Date().toISOString() };
@@ -491,7 +528,6 @@
         const endDateStr = getLocalDateString(end);
 
         if (startDateStr === endDateStr) {
-          // Regular same-day session
           const durationMin = Math.round((end - start) / 60000);
           if (durationMin > 0) {
             acSessions.unshift({
@@ -502,7 +538,6 @@
             });
           }
         } else {
-          // Session crossed midnight! Split across days:
           const midnight = new Date(end.getFullYear(), end.getMonth(), end.getDate(), 0, 0, 0, 0);
           const durBeforeMidnight = Math.max(1, Math.round((midnight - start) / 60000));
           const durAfterMidnight = Math.max(0, Math.round((end - midnight) / 60000));
@@ -571,9 +606,8 @@
       document.getElementById('ac-daily-avg').innerText = `${Math.floor(avgMins / 60)}h ${avgMins % 60}m`;
       document.getElementById('ac-cycle-days').innerText = `${cycleDays} days`;
 
-      // Weekday vs Weekend Budget with Local Time
       const today = new Date();
-      const dayOfWeek = today.getDay(); // 0 is Sun, 6 is Sat
+      const dayOfWeek = today.getDay();
       const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
       const targetBudgetMins = isWeekend ? CONFIG.weekendBudgetMins : CONFIG.weekdayBudgetMins;
       const dayName = isWeekend ? (dayOfWeek === 0 ? 'Sun' : 'Sat') : 'Weekday';
@@ -678,6 +712,18 @@
         return;
       }
 
+      // Update Provisional Bill Card
+      const baseline = meterReadings[0];
+      const latest = meterReadings[meterReadings.length - 1];
+      const totalUnits = Math.max(0, latest.units - baseline.units);
+      const elecCost = Math.round(totalUnits * CONFIG.ratePerUnit);
+      const totalBill = CONFIG.rent + CONFIG.water + elecCost;
+
+      document.getElementById('bill-date-tag').innerText = latest.date;
+      document.getElementById('bill-elec-label').innerText = `Electricity (${totalUnits.toFixed(1)} units @ ₹${CONFIG.ratePerUnit})`;
+      document.getElementById('bill-elec-val').innerText = `₹${elecCost}`;
+      document.getElementById('bill-total-val').innerText = `₹${totalBill.toLocaleString('en-IN')}`;
+
       let html = '';
       for (let i = meterReadings.length - 1; i >= 0; i--) {
         const item = meterReadings[i];
@@ -705,11 +751,8 @@
 
       // Update Analytics
       if (meterReadings.length > 1) {
-        const first = meterReadings[0];
-        const latest = meterReadings[meterReadings.length - 1];
-        const consumed = latest.units - first.units;
-        const days = Math.max(1, Math.round((new Date(latest.date) - new Date(first.date)) / (1000 * 60 * 60 * 24)));
-        const dailyAvg = (consumed / days);
+        const days = Math.max(1, Math.round((new Date(latest.date) - new Date(firstDate(meterReadings))) / (1000 * 60 * 60 * 24)));
+        const dailyAvg = (totalUnits / days);
         const projected = dailyAvg * 30;
 
         document.getElementById('analytics-daily').innerText = `${dailyAvg.toFixed(2)} u/d`;
@@ -717,6 +760,10 @@
         document.getElementById('analytics-proj').innerText = `${projected.toFixed(1)} u`;
         document.getElementById('analytics-proj-cost').innerText = `₹${Math.round(projected * CONFIG.ratePerUnit)}`;
       }
+    }
+
+    function firstDate(arr) {
+      return arr.length > 0 ? arr[0].date : getLocalDateString();
     }
 
     /* BACKUP & EXPORT FUNCTIONS */
@@ -782,7 +829,7 @@ ${logStr}
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `tracker-backup-${new Date().toISOString().split('T')[0]}.json`;
+      a.download = `tracker-backup-${getLocalDateString()}.json`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
