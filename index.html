@@ -88,7 +88,7 @@
       margin-bottom: 6px;
     }
 
-    input {
+    input, select {
       width: 100%;
       background-color: var(--card-subtle);
       border: 1px solid var(--border);
@@ -100,7 +100,7 @@
       outline: none;
     }
 
-    input:focus {
+    input:focus, select:focus {
       border-color: var(--accent);
     }
 
@@ -298,7 +298,7 @@
       margin-bottom: 2px;
     }
 
-    /* PROFESSIONAL INVOICE MODAL */
+    /* OFFICIAL INVOICE MODAL */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -319,11 +319,11 @@
       background: #ffffff;
       color: #0f172a;
       width: 100%;
-      max-width: 440px;
+      max-width: 460px;
       border-radius: 12px;
       padding: 24px;
       position: relative;
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
     }
 
     .invoice-header {
@@ -331,19 +331,18 @@
       justify-content: space-between;
       align-items: flex-start;
       border-bottom: 2px solid #e2e8f0;
-      padding-bottom: 14px;
-      margin-bottom: 14px;
+      padding-bottom: 12px;
+      margin-bottom: 12px;
     }
 
     .invoice-title {
-      font-size: 1.25rem;
+      font-size: 1.2rem;
       font-weight: 800;
       color: #0f172a;
-      letter-spacing: -0.5px;
     }
 
     .invoice-subtitle {
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       color: #64748b;
       margin-top: 2px;
     }
@@ -351,7 +350,7 @@
     .invoice-badge {
       background: #f1f5f9;
       color: #334155;
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       font-weight: 700;
       padding: 4px 8px;
       border-radius: 6px;
@@ -359,49 +358,113 @@
       text-transform: uppercase;
     }
 
+    /* IT FILING PARTY CARDS */
+    .parties-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 12px;
+      font-size: 0.75rem;
+    }
+
+    .party-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 8px 10px;
+    }
+
+    .party-title {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: #64748b;
+      margin-bottom: 4px;
+    }
+
+    .party-name {
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .party-desc {
+      color: #475569;
+      margin-top: 2px;
+      line-height: 1.3;
+    }
+
     .invoice-meta-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
+      gap: 8px;
       background: #f8fafc;
-      padding: 12px;
+      padding: 10px;
       border-radius: 8px;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
       border: 1px solid #e2e8f0;
     }
 
     .meta-item-title {
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       text-transform: uppercase;
       font-weight: 700;
       color: #64748b;
     }
 
     .meta-item-val {
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       font-weight: 600;
       color: #0f172a;
       margin-top: 2px;
     }
 
+    .payment-select-container {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      padding: 8px 12px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .payment-select-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #334155;
+    }
+
+    .payment-select {
+      width: auto;
+      margin: 0;
+      padding: 4px 8px;
+      font-size: 0.8rem;
+      background: #ffffff;
+      color: #0f172a;
+      border: 1px solid #94a3b8;
+      border-radius: 6px;
+      font-weight: 600;
+    }
+
     .invoice-table {
       width: 100%;
       border-collapse: collapse;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
     .invoice-table th {
       text-align: left;
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       text-transform: uppercase;
       color: #64748b;
       border-bottom: 1px solid #cbd5e1;
-      padding: 8px 4px;
+      padding: 6px 4px;
     }
 
     .invoice-table td {
-      padding: 10px 4px;
-      font-size: 0.85rem;
+      padding: 8px 4px;
+      font-size: 0.8rem;
       border-bottom: 1px solid #f1f5f9;
       color: #334155;
     }
@@ -414,21 +477,21 @@
 
     .invoice-summary-box {
       border-top: 2px solid #0f172a;
-      padding-top: 12px;
+      padding-top: 10px;
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
     .invoice-total-label {
-      font-size: 1rem;
+      font-size: 0.95rem;
       font-weight: 800;
       color: #0f172a;
     }
 
     .invoice-total-amount {
-      font-size: 1.5rem;
+      font-size: 1.4rem;
       font-weight: 800;
       color: #2563eb;
     }
@@ -436,7 +499,7 @@
     .modal-actions {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
+      gap: 8px;
     }
 
     @media print {
@@ -453,7 +516,18 @@
         width: 100%;
         box-shadow: none;
       }
-      .modal-actions, .invoice-close-btn, .archive-btn {
+      .payment-select-container {
+        border: none;
+        background: transparent;
+        padding: 0;
+      }
+      .payment-select {
+        border: none;
+        font-weight: 700;
+        appearance: none;
+        -webkit-appearance: none;
+      }
+      .modal-actions, .invoice-close-btn, .edit-it-btn {
         display: none !important;
       }
     }
@@ -591,15 +665,31 @@
     <div id="past-bills-container"></div>
   </div>
 
-  <!-- INVOICE MODAL (CURRENT OR PAST) -->
+  <!-- INVOICE MODAL WITH IT FILING DETAILS -->
   <div id="invoice-modal" class="modal-overlay">
     <div class="invoice-card" id="printable-invoice">
       <div class="invoice-header">
         <div>
-          <div class="invoice-title">RENT & UTILITY BILL</div>
-          <div class="invoice-subtitle">Monthly Settlement Statement</div>
+          <div class="invoice-title">RENT & UTILITY RECEIPT</div>
+          <div class="invoice-subtitle">Under Section 10(13A) of Income Tax Act</div>
         </div>
         <div class="invoice-badge" id="inv-status">STATEMENT</div>
+      </div>
+
+      <!-- PARTIES: TENANT & LANDLORD INFO (IT COMPLIANT) -->
+      <div class="parties-grid">
+        <div class="party-box">
+          <div class="party-title">Tenant (Resident)</div>
+          <div class="party-name" id="disp-tenant-name">Your Full Name</div>
+          <div class="party-desc" id="disp-tenant-phone">+91 XXXXX XXXXX</div>
+          <div class="party-desc" id="disp-tenant-addr" style="font-size: 0.7rem; color: #64748b; margin-top: 3px;">Full Rented House Address</div>
+        </div>
+        <div class="party-box">
+          <div class="party-title">Landlord / Owner</div>
+          <div class="party-name" id="disp-landlord-name">Landlord Name</div>
+          <div class="party-desc" id="disp-landlord-pan">PAN: XXXXX0000X</div>
+          <div class="party-desc" id="disp-landlord-phone" style="font-size: 0.7rem; color: #64748b; margin-top: 3px;">Phone: Available on Record</div>
+        </div>
       </div>
 
       <div class="invoice-meta-grid">
@@ -621,6 +711,16 @@
         </div>
       </div>
 
+      <!-- PAYMENT MODE SELECTOR -->
+      <div class="payment-select-container">
+        <span class="payment-select-label">Payment Mode:</span>
+        <select id="payment-mode-select" class="payment-select" onchange="onPaymentModeChange()">
+          <option value="Cash">Cash</option>
+          <option value="UPI">UPI (GPay / PhonePe / Paytm)</option>
+          <option value="Bank Transfer">Bank Transfer (IMPS / NEFT)</option>
+        </select>
+      </div>
+
       <table class="invoice-table">
         <thead>
           <tr>
@@ -633,7 +733,7 @@
           <tr>
             <td>
               <strong id="inv-rent-title">House Rent</strong>
-              <div style="font-size: 0.72rem; color: #64748b;" id="inv-rent-sub">Fixed Monthly</div>
+              <div style="font-size: 0.7rem; color: #64748b;" id="inv-rent-sub">Eligible for HRA Exemption</div>
             </td>
             <td style="text-align: right;" id="inv-rent-rate">--</td>
             <td class="amount" id="inv-rent-val">--</td>
@@ -646,7 +746,7 @@
           <tr>
             <td>
               <strong>Electricity (EB)</strong>
-              <div style="font-size: 0.72rem; color: #64748b;" id="inv-eb-sub">Submeter Consumption</div>
+              <div style="font-size: 0.7rem; color: #64748b;" id="inv-eb-sub">Submeter Consumption</div>
             </td>
             <td style="text-align: right;" id="inv-units-detail">--</td>
             <td class="amount" id="inv-eb-val">--</td>
@@ -657,16 +757,17 @@
       <div class="invoice-summary-box">
         <div>
           <div class="invoice-total-label">TOTAL AMOUNT</div>
-          <div style="font-size: 0.75rem; color: #64748b;">Paid via UPI / Bank Transfer</div>
+          <div style="font-size: 0.72rem; color: #64748b;" id="inv-pay-footer">Paid via Cash</div>
         </div>
         <div class="invoice-total-amount" id="inv-total-val">₹0</div>
       </div>
 
       <div class="modal-actions">
-        <button class="btn btn-primary" onclick="shareOrCopyBill()" style="font-size: 0.85rem; padding: 12px;">📤 Share / Copy</button>
-        <button class="btn btn-green" onclick="window.print()" style="font-size: 0.85rem; padding: 12px;">🖨️ Print / PDF</button>
+        <button class="btn btn-primary" onclick="shareOrCopyBill()" style="font-size: 0.85rem; padding: 10px;">📤 Share / Copy</button>
+        <button class="btn btn-green" onclick="window.print()" style="font-size: 0.85rem; padding: 10px;">🖨️ Print / PDF</button>
       </div>
-      <button class="btn btn-subtle invoice-close-btn" onclick="closeInvoiceModal()" style="margin-top: 10px; font-size: 0.85rem; padding: 10px; color: #0f172a; border-color: #cbd5e1;">Close</button>
+      <button class="btn btn-subtle edit-it-btn" onclick="editPartyDetails()" style="margin-top: 8px; font-size: 0.8rem; padding: 8px; color: #2563eb; border-color: #93c5fd;">✏️ Edit Tenant & Landlord Info</button>
+      <button class="btn btn-subtle invoice-close-btn" onclick="closeInvoiceModal()" style="margin-top: 6px; font-size: 0.8rem; padding: 8px; color: #0f172a; border-color: #cbd5e1;">Close</button>
     </div>
   </div>
 
@@ -713,7 +814,6 @@
       return dateStr;
     }
 
-    // Default Seeded Archive containing your September bill from notebook photo
     const DEFAULT_PAST_BILLS = [
       {
         id: 'bill-sep-2026',
@@ -727,6 +827,7 @@
         water: 300,
         eb: 920,
         total: 4420,
+        paymentMode: 'Cash',
         status: 'PAID'
       }
     ];
@@ -737,9 +838,19 @@
     let currentSession = JSON.parse(localStorage.getItem('currentSession') || 'null');
     let timerInterval = null;
     let viewingBill = null;
+    let selectedPaymentMode = 'Cash';
+
+    let partyDetails = JSON.parse(localStorage.getItem('partyDetails') || 'null') || {
+      tenantName: 'Tenant Legal Name',
+      tenantPhone: '+91 98765 43210',
+      tenantAddr: 'House/Flat No, Street, Chennai - 600001',
+      landlordName: 'Landlord Legal Name',
+      landlordPan: 'ABCDE1234F',
+      landlordPhone: 'Available on Record'
+    };
 
     function init() {
-      if (!pastBills || pastBills.length === 0) {
+      if (!pastBills || pastBills.length === 0 || pastBills[0].paymentMode !== 'Cash') {
         pastBills = DEFAULT_PAST_BILLS;
         localStorage.setItem('pastBills', JSON.stringify(pastBills));
       }
@@ -771,6 +882,7 @@
       renderAC();
       renderMeterHistory();
       renderPastBills();
+      updatePartyDisplay();
     }
 
     function switchTab(tab) {
@@ -1085,6 +1197,7 @@
             <div><strong>Dates:</strong> ${b.period}</div>
             <div><strong>EB Range:</strong> ${b.meterStart} to ${b.meterEnd} (${b.units} units @ ₹8)</div>
             <div><strong>Split:</strong> Rent ₹${b.rent.toLocaleString('en-IN')} + Water ₹${b.water} + EB ₹${b.eb.toLocaleString('en-IN')}</div>
+            <div style="margin-top: 4px; color: #60a5fa; font-weight: 600;">Payment Mode: ${b.paymentMode || 'Cash'}</div>
           </div>
           <div class="past-bill-total">
             <div>
@@ -1097,19 +1210,59 @@
       `).join('');
     }
 
-    /* INVOICE MODAL LOGIC (CURRENT & ARCHIVED) */
+    /* IT & PARTY DETAILS MANAGEMENT */
+    function updatePartyDisplay() {
+      document.getElementById('disp-tenant-name').innerText = partyDetails.tenantName;
+      document.getElementById('disp-tenant-phone').innerText = 'Phone: ' + partyDetails.tenantPhone;
+      document.getElementById('disp-tenant-addr').innerText = partyDetails.tenantAddr;
+
+      document.getElementById('disp-landlord-name').innerText = partyDetails.landlordName;
+      document.getElementById('disp-landlord-pan').innerText = 'PAN: ' + partyDetails.landlordPan;
+      document.getElementById('disp-landlord-phone').innerText = 'Phone: ' + partyDetails.landlordPhone;
+    }
+
+    function editPartyDetails() {
+      const tName = prompt("Your Legal Name (as per PAN):", partyDetails.tenantName);
+      if (tName === null) return;
+      const tPhone = prompt("Your Contact Phone Number:", partyDetails.tenantPhone);
+      if (tPhone === null) return;
+      const tAddr = prompt("Full Rented Property Address (with PIN):", partyDetails.tenantAddr);
+      if (tAddr === null) return;
+      const lName = prompt("Landlord / Owner Name:", partyDetails.landlordName);
+      if (lName === null) return;
+      const lPan = prompt("Landlord PAN (Required if rent > ₹1L/yr):", partyDetails.landlordPan);
+      if (lPan === null) return;
+
+      partyDetails = {
+        tenantName: tName.trim() || 'Tenant Legal Name',
+        tenantPhone: tPhone.trim() || 'Phone on Record',
+        tenantAddr: tAddr.trim() || 'Property Address',
+        landlordName: lName.trim() || 'Landlord Legal Name',
+        landlordPan: (lPan.trim() || 'PAN Pending').toUpperCase(),
+        landlordPhone: partyDetails.landlordPhone
+      };
+
+      localStorage.setItem('partyDetails', JSON.stringify(partyDetails));
+      updatePartyDisplay();
+      alert("Tenant & Landlord information saved for IT records!");
+    }
+
+    /* INVOICE MODAL WITH BIDIRECTIONAL PAYMENT SYNC */
     function showInvoiceModal(billId = null) {
+      const select = document.getElementById('payment-mode-select');
+
       if (billId) {
-        // Show specific archived past bill
         const past = pastBills.find(b => b.id === billId);
         if (!past) return;
         viewingBill = past;
+        selectedPaymentMode = past.paymentMode || 'Cash';
+        select.value = selectedPaymentMode;
 
         document.getElementById('inv-period').innerText = past.period;
         document.getElementById('inv-status').innerText = 'PAID STATEMENT';
         document.getElementById('inv-status-label').innerText = 'PAID / ARCHIVED';
         document.getElementById('inv-meter-range').innerText = `${past.meterStart} u ➔ ${past.meterEnd} u`;
-        document.getElementById('inv-rent-sub').innerText = past.rentNote || 'Fixed Monthly';
+        document.getElementById('inv-rent-sub').innerText = past.rentNote || 'Eligible for HRA Exemption';
         document.getElementById('inv-rent-rate').innerText = past.rentNote || 'Fixed';
         document.getElementById('inv-rent-val').innerText = `₹${past.rent.toLocaleString('en-IN')}`;
         document.getElementById('inv-water-val').innerText = `₹${past.water.toLocaleString('en-IN')}`;
@@ -1117,7 +1270,6 @@
         document.getElementById('inv-eb-val').innerText = `₹${past.eb.toLocaleString('en-IN')}`;
         document.getElementById('inv-total-val').innerText = `₹${past.total.toLocaleString('en-IN')}`;
       } else {
-        // Show live current cycle bill
         if (meterReadings.length === 0) {
           alert("Please record a meter reading first.");
           return;
@@ -1127,6 +1279,8 @@
         const totalUnits = Math.max(0, latest.units - baseline.units);
         const elecCost = Math.round(totalUnits * CONFIG.ratePerUnit);
         const totalBill = CONFIG.rent + CONFIG.water + elecCost;
+
+        selectedPaymentMode = select.value || 'Cash';
 
         viewingBill = {
           period: `${formatDateDisplay(baseline.date)} – ${formatDateDisplay(latest.date)}`,
@@ -1144,7 +1298,7 @@
         document.getElementById('inv-status').innerText = 'PROVISIONAL';
         document.getElementById('inv-status-label').innerText = 'DUE / ACTIVE';
         document.getElementById('inv-meter-range').innerText = `${baseline.units} u ➔ ${latest.units} u`;
-        document.getElementById('inv-rent-sub').innerText = 'Fixed Monthly';
+        document.getElementById('inv-rent-sub').innerText = 'Eligible for HRA Exemption';
         document.getElementById('inv-rent-rate').innerText = 'Fixed Monthly';
         document.getElementById('inv-rent-val').innerText = `₹${CONFIG.rent.toLocaleString('en-IN')}`;
         document.getElementById('inv-water-val').innerText = `₹${CONFIG.water.toLocaleString('en-IN')}`;
@@ -1153,7 +1307,31 @@
         document.getElementById('inv-total-val').innerText = `₹${totalBill.toLocaleString('en-IN')}`;
       }
 
+      updatePartyDisplay();
+      updatePaymentFooter();
       document.getElementById('invoice-modal').classList.add('active');
+    }
+
+    function onPaymentModeChange() {
+      selectedPaymentMode = document.getElementById('payment-mode-select').value;
+      updatePaymentFooter();
+
+      if (viewingBill && viewingBill.id) {
+        viewingBill.paymentMode = selectedPaymentMode;
+        localStorage.setItem('pastBills', JSON.stringify(pastBills));
+        renderPastBills();
+      }
+    }
+
+    function updatePaymentFooter() {
+      const footer = document.getElementById('inv-pay-footer');
+      if (selectedPaymentMode === 'Cash') {
+        footer.innerText = 'Paid via Cash';
+      } else if (selectedPaymentMode === 'Bank Transfer') {
+        footer.innerText = 'Paid via Bank Transfer (IMPS/NEFT)';
+      } else {
+        footer.innerText = 'Paid via UPI (GPay / PhonePe / Paytm)';
+      }
     }
 
     function closeInvoiceModal() {
@@ -1164,22 +1342,28 @@
     function shareOrCopyBill() {
       if (!viewingBill) return;
       const b = viewingBill;
-      const billText = `MONTHLY RENT & UTILITY BILL
+      const billText = `RENT & UTILITY RECEIPT (HRA PROOF)
+Under Section 10(13A) of Income Tax Act
 ==================================
-Period: ${b.period}
-Status: ${b.status || 'SETTLED'}
-Submeter: ${b.meterStart} to ${b.meterEnd} (${b.units} Units)
+Tenant: ${partyDetails.tenantName} (${partyDetails.tenantPhone})
+Address: ${partyDetails.tenantAddr}
+Landlord: ${partyDetails.landlordName} (PAN: ${partyDetails.landlordPan})
 
-1. House Rent: ₹${b.rent.toLocaleString('en-IN')}
+Period: ${b.period}
+Payment Mode: ${selectedPaymentMode}
+Submeter Reading: ${b.meterStart} to ${b.meterEnd} (${b.units} Units)
+
+1. House Rent (Pure Rent for HRA): ₹${b.rent.toLocaleString('en-IN')}
 2. Water Charges: ₹${b.water.toLocaleString('en-IN')}
 3. Electricity (EB @ ₹${CONFIG.ratePerUnit}/unit): ₹${b.eb.toLocaleString('en-IN')}
 ----------------------------------
-TOTAL AMOUNT PAYABLE: ₹${b.total.toLocaleString('en-IN')}
+TOTAL AMOUNT: ₹${b.total.toLocaleString('en-IN')}
+(Paid via ${selectedPaymentMode})
 ==================================`;
 
       if (navigator.share) {
         navigator.share({
-          title: 'Monthly Rent with EB Bill',
+          title: 'HRA Rent Receipt with EB Bill',
           text: billText
         }).catch(err => {
           if (err.name !== 'AbortError') copyText(billText);
@@ -1191,7 +1375,7 @@ TOTAL AMOUNT PAYABLE: ₹${b.total.toLocaleString('en-IN')}
 
     function copyText(text) {
       navigator.clipboard.writeText(text).then(() => {
-        alert("Bill Statement copied to clipboard!");
+        alert("IT-Compliant Bill Statement copied to clipboard!");
       }).catch(err => {
         alert("Error copying: " + err);
       });
@@ -1255,6 +1439,7 @@ ${logStr}
         acSessions,
         meterReadings,
         pastBills,
+        partyDetails,
         exportedAt: new Date().toISOString()
       };
       const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
