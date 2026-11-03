@@ -9,6 +9,8 @@
   <link rel="icon" type="image/png" href="icon.PNG">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <!-- HTML2CANVAS FOR SHARING AS TRUE PNG IMAGE -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
     :root {
       --bg: #121212;
@@ -270,31 +272,6 @@
       color: var(--green);
     }
 
-    .audit-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-      font-size: 0.75rem;
-      background: #181818;
-      border-radius: 6px;
-      overflow: hidden;
-    }
-
-    .audit-table th {
-      background: #262626;
-      color: var(--text-muted);
-      padding: 8px 6px;
-      text-align: left;
-      font-weight: 600;
-      text-transform: uppercase;
-    }
-
-    .audit-table td {
-      padding: 8px 6px;
-      border-bottom: 1px solid #2f2f2f;
-      color: var(--text-main);
-    }
-
     .nav-bar {
       position: fixed;
       bottom: 0;
@@ -504,33 +481,6 @@
       color: #0f172a;
     }
 
-    .invoice-summary-box {
-      border-top: 2px solid #0f172a;
-      padding-top: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 14px;
-    }
-
-    .invoice-total-label {
-      font-size: 0.95rem;
-      font-weight: 800;
-      color: #0f172a;
-    }
-
-    .invoice-total-amount {
-      font-size: 1.4rem;
-      font-weight: 800;
-      color: #2563eb;
-    }
-
-    .modal-actions {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
-
     .day-audit-section {
       background: #f8fafc;
       border: 1px solid #e2e8f0;
@@ -560,6 +510,33 @@
 
     .day-audit-row:last-child {
       border-bottom: none;
+    }
+
+    .invoice-summary-box {
+      border-top: 2px solid #0f172a;
+      padding-top: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 14px;
+    }
+
+    .invoice-total-label {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .invoice-total-amount {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #2563eb;
+    }
+
+    .modal-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
     }
 
     @media print {
@@ -827,8 +804,9 @@
         <div class="invoice-total-amount" id="inv-total-val">₹0</div>
       </div>
 
+      <!-- TRUE IMAGE & PDF ACTION BUTTONS -->
       <div class="modal-actions">
-        <button class="btn btn-primary" onclick="shareOrCopyBill()" style="font-size: 0.85rem; padding: 10px;">📤 Share / Copy</button>
+        <button id="img-share-btn" class="btn btn-primary" onclick="shareAsImage()" style="font-size: 0.85rem; padding: 10px;">📸 Save / Share Image</button>
         <button class="btn btn-green" onclick="window.print()" style="font-size: 0.85rem; padding: 10px;">🖨️ Print / PDF</button>
       </div>
       <button class="btn btn-subtle edit-it-btn" onclick="editPartyDetails()" style="margin-top: 8px; font-size: 0.8rem; padding: 8px; color: #2563eb; border-color: #93c5fd;">✏️ Edit Tenant & Landlord Info</button>
@@ -879,7 +857,6 @@
       return dateStr;
     }
 
-    // Default Seeded Archive containing your September bill
     const DEFAULT_PAST_BILLS = [
       {
         id: 'bill-sep-2026',
@@ -1270,7 +1247,6 @@ This will:
 
       const pMode = prompt("Enter payment mode (Cash / UPI / Bank Transfer):", selectedPaymentMode) || selectedPaymentMode;
 
-      // Bundle all day-by-day meter readings of this cycle
       const cycleReadingsLog = meterReadings.map((r, i) => {
         const prev = i > 0 ? meterReadings[i - 1].units : r.units;
         const diff = (r.units - prev).toFixed(1);
@@ -1281,7 +1257,6 @@ This will:
         };
       });
 
-      // Bundle AC sessions belonging to this cycle
       const cycleACSessions = acSessions.filter(s => s.date >= baseline.date && s.date <= latest.date);
 
       const archivedBill = {
@@ -1305,7 +1280,6 @@ This will:
       pastBills.unshift(archivedBill);
       localStorage.setItem('pastBills', JSON.stringify(pastBills));
 
-      // Reset active cycle while keeping latest reading as new baseline
       meterReadings = [{ date: latest.date, units: latest.units }];
       saveMeterData();
 
@@ -1386,7 +1360,7 @@ This will:
       alert("Tenant & Landlord information saved for IT records!");
     }
 
-    /* INVOICE & DAY-BY-DAY AUDIT MODAL */
+    /* INVOICE & AUDIT MODAL */
     function showInvoiceModal(billId = null) {
       const select = document.getElementById('payment-mode-select');
       const auditContainer = document.getElementById('day-audit-rows');
@@ -1503,46 +1477,74 @@ This will:
       viewingBill = null;
     }
 
-    function shareOrCopyBill() {
-      if (!viewingBill) return;
-      const b = viewingBill;
-      const billText = `RENT & UTILITY RECEIPT (HRA PROOF)
-Under Section 10(13A) of Income Tax Act
-==================================
-Tenant: ${partyDetails.tenantName} (${partyDetails.tenantPhone})
-Address: ${partyDetails.tenantAddr}
-Landlord: ${partyDetails.landlordName} (PAN: ${partyDetails.landlordPan})
+    /* TRUE IMAGE GENERATION & SHARING VIA HTML2CANVAS */
+    async function shareAsImage() {
+      const invoiceElement = document.getElementById('printable-invoice');
+      const actionBtns = invoiceElement.querySelectorAll('.modal-actions, .edit-it-btn, .invoice-close-btn');
+      const shareBtn = document.getElementById('img-share-btn');
+      
+      const origText = shareBtn.innerText;
+      shareBtn.innerText = "⏳ Generating Image...";
+      
+      // Temporarily hide buttons from screenshot
+      actionBtns.forEach(el => el.style.display = 'none');
 
-Period: ${b.period}
-Payment Mode: ${selectedPaymentMode}
-Submeter Reading: ${b.meterStart} to ${b.meterEnd} (${b.units} Units)
-
-1. House Rent (Pure Rent for HRA): ₹${b.rent.toLocaleString('en-IN')}
-2. Water Charges: ₹${b.water.toLocaleString('en-IN')}
-3. Electricity (EB @ ₹${CONFIG.ratePerUnit}/unit): ₹${b.eb.toLocaleString('en-IN')}
-----------------------------------
-TOTAL AMOUNT: ₹${b.total.toLocaleString('en-IN')}
-(Paid via ${selectedPaymentMode})
-==================================`;
-
-      if (navigator.share) {
-        navigator.share({
-          title: 'HRA Rent Receipt with EB Bill',
-          text: billText
-        }).catch(err => {
-          if (err.name !== 'AbortError') copyText(billText);
+      try {
+        const canvas = await html2canvas(invoiceElement, {
+          scale: 2, // High resolution retina capture
+          useCORS: true,
+          backgroundColor: '#ffffff'
         });
-      } else {
-        copyText(billText);
+
+        // Restore buttons
+        actionBtns.forEach(el => el.style.display = '');
+        shareBtn.innerText = origText;
+
+        canvas.toBlob(async (blob) => {
+          if (!blob) {
+            alert("Could not generate image.");
+            return;
+          }
+
+          const filename = `Rent-Bill-${viewingBill ? viewingBill.period.replace(/[^a-zA-Z0-9]/g, '-') : 'Receipt'}.png`;
+          const file = new File([blob], filename, { type: 'image/png' });
+
+          // Check if iOS / Safari navigator supports sharing files directly to Photos/WhatsApp
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            try {
+              await navigator.share({
+                files: [file],
+                title: 'Rent & Utility Receipt',
+                text: 'Monthly Rent & Utility Bill Statement'
+              });
+            } catch (err) {
+              if (err.name !== 'AbortError') {
+                triggerImageDownload(blob, filename);
+              }
+            }
+          } else {
+            // Fallback: direct download as PNG image
+            triggerImageDownload(blob, filename);
+          }
+        }, 'image/png');
+
+      } catch (err) {
+        actionBtns.forEach(el => el.style.display = '');
+        shareBtn.innerText = origText;
+        alert("Image generation failed: " + err);
       }
     }
 
-    function copyText(text) {
-      navigator.clipboard.writeText(text).then(() => {
-        alert("IT-Compliant Bill Statement copied to clipboard!");
-      }).catch(err => {
-        alert("Error copying: " + err);
-      });
+    function triggerImageDownload(blob, filename) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      alert("Image generated! Check your Downloads or Photos.");
     }
 
     /* BACKUP & EXPORT FUNCTIONS */
