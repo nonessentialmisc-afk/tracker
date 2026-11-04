@@ -12,9 +12,15 @@
   <link rel="icon" type="image/png" href="icon.PNG">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  
+  <!-- HTML2CANVAS & SHA256 -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <!-- PURE SYNCHRONOUS SHA-256 FOR FLAWLESS IOS AUTHENTICATION -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
+
+  <!-- FIREBASE APP & FIRESTORE (COMPAT V9) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
   <style>
     :root {
       --bg: #121212;
@@ -45,8 +51,7 @@
 
     header {
       background-color: var(--card-bg);
-      padding: 16px;
-      text-align: center;
+      padding: 14px 16px;
       border-bottom: 1px solid var(--border);
       position: sticky;
       top: 0;
@@ -60,8 +65,27 @@
       font-size: 1.05rem;
       font-weight: 700;
       letter-spacing: 0.5px;
-      flex: 1;
       text-align: center;
+      flex: 1;
+    }
+
+    .cloud-badge {
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: #1e293b;
+      color: #94a3b8;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .cloud-badge.online {
+      color: #34d399;
+      border-color: #065f46;
+      background: #064e3b33;
     }
 
     .logout-btn {
@@ -379,6 +403,115 @@
       color: var(--green);
     }
 
+    /* PROOFS GALLERY STYLING */
+    .proof-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+
+    .proof-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .proof-info-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .proof-days-badge {
+      font-size: 0.7rem;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: #1e3a8a33;
+      color: #60a5fa;
+      border: 1px solid #1e3a8a;
+      font-weight: 600;
+    }
+
+    .proof-img-container {
+      width: 100%;
+      height: 220px;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border);
+      cursor: pointer;
+    }
+
+    .proof-img-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .proof-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* FULLSCREEN PHOTO MODAL */
+    #photo-lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.95);
+      z-index: 10000;
+      justify-content: center;
+      align-items: center;
+      padding: 14px;
+      flex-direction: column;
+    }
+
+    #photo-lightbox.active {
+      display: flex;
+    }
+
+    #photo-lightbox img {
+      max-width: 100%;
+      max-height: 80vh;
+      border-radius: 8px;
+      object-fit: contain;
+    }
+
+    /* PHOTO UPLOAD MODAL */
+    #photo-upload-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 9998;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+    }
+
+    #photo-upload-modal.active {
+      display: flex;
+    }
+
+    .upload-modal-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px 20px;
+      width: 100%;
+      max-width: 380px;
+      text-align: center;
+    }
+
     .nav-bar {
       position: fixed;
       bottom: 0;
@@ -397,7 +530,7 @@
       flex-direction: column;
       align-items: center;
       color: var(--text-muted);
-      font-size: 0.72rem;
+      font-size: 0.68rem;
       cursor: pointer;
       flex: 1;
       padding: 4px 0;
@@ -408,7 +541,7 @@
     }
 
     .nav-icon {
-      font-size: 1.2rem;
+      font-size: 1.15rem;
       margin-bottom: 2px;
     }
 
@@ -700,7 +833,7 @@
 
   <!-- AUTHENTICATED APP CONTENT -->
   <header>
-    <div style="width: 60px;"></div>
+    <div id="cloud-indicator" class="cloud-badge">☁️ Connecting...</div>
     <h1 id="header-title">AC Tracker</h1>
     <button class="logout-btn" onclick="handleLogout()">Logout</button>
   </header>
@@ -762,7 +895,7 @@
       <input type="date" id="meter-date">
       <label>Meter Units</label>
       <input type="number" id="meter-val" placeholder="e.g. 314" step="any">
-      <button class="btn btn-primary" onclick="saveMeterReading()">Save Reading</button>
+      <button class="btn btn-primary" onclick="initiateSaveReading()">Save Reading</button>
     </div>
 
     <!-- PROVISIONAL BILL CARD -->
@@ -820,7 +953,19 @@
     </div>
   </div>
 
-  <!-- TAB 3: PAST BILLS ARCHIVE -->
+  <!-- TAB 3: METER PROOFS (30-DAY GALLERY) -->
+  <div id="tab-proofs" class="tab-content">
+    <div class="card" style="margin-bottom: 12px;">
+      <div class="card-title">Submeter Photo Proofs</div>
+      <div style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.4;">
+        Live snapshots uploaded during meter logging. Photos remain visible and verifiable for <strong>30 days</strong>.
+      </div>
+    </div>
+    
+    <div id="proofs-container"></div>
+  </div>
+
+  <!-- TAB 4: PAST BILLS ARCHIVE -->
   <div id="tab-past" class="tab-content">
     <div class="card" style="margin-bottom: 12px;">
       <div class="card-title">Settled Monthly Statements</div>
@@ -830,6 +975,39 @@
     </div>
     
     <div id="past-bills-container"></div>
+  </div>
+
+  <!-- PHOTO ATTACH / CONFIRM MODAL -->
+  <div id="photo-upload-modal">
+    <div class="upload-modal-card">
+      <div style="font-size: 2.2rem; margin-bottom: 10px;">📸</div>
+      <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 6px;">Attach Meter Proof</h3>
+      <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 16px;">
+        Take a picture or choose from photos to verify reading <strong id="pending-reading-text" style="color: var(--accent);">-- u</strong>.
+      </p>
+
+      <!-- Hidden standard inputs for camera and gallery -->
+      <input type="file" id="camera-file-input" accept="image/*" capture="environment" style="display: none;" onchange="handleFileChosen(event)">
+      <input type="file" id="gallery-file-input" accept="image/*" style="display: none;" onchange="handleFileChosen(event)">
+
+      <div id="preview-box" style="display: none; margin-bottom: 14px;">
+        <img id="upload-preview-img" style="width: 100%; height: 160px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border);">
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <button class="btn btn-primary" onclick="document.getElementById('camera-file-input').click()">📷 Take Photo (Camera)</button>
+        <button class="btn btn-subtle" onclick="document.getElementById('gallery-file-input').click()">🖼️ Choose from Photos</button>
+        <button id="confirm-save-btn" class="btn btn-green" onclick="finalizeMeterReading(true)" style="display: none;">✅ Confirm & Save Reading</button>
+        <button class="btn btn-subtle" onclick="finalizeMeterReading(false)" style="color: var(--text-muted); border: none; font-size: 0.85rem;">Skip Photo for Now</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FULLSCREEN LIGHTBOX -->
+  <div id="photo-lightbox" onclick="closeLightbox()">
+    <img id="lightbox-img" src="" alt="Meter Reading Proof">
+    <div id="lightbox-caption" style="color: #fff; margin-top: 12px; font-size: 0.9rem; text-align: center;"></div>
+    <button class="btn btn-subtle" style="width: auto; padding: 6px 18px; margin-top: 14px; color: #fff;">Close</button>
   </div>
 
   <!-- INVOICE & AUDIT MODAL -->
@@ -945,11 +1123,15 @@
   <nav class="nav-bar">
     <div class="nav-item active" id="nav-ac" onclick="switchTab('ac')">
       <div class="nav-icon">❄️</div>
-      <div>AC Tracker</div>
+      <div>AC</div>
     </div>
     <div class="nav-item" id="nav-meter" onclick="switchTab('meter')">
       <div class="nav-icon">⚡</div>
-      <div>Rent & Meter</div>
+      <div>Rent/EB</div>
+    </div>
+    <div class="nav-item" id="nav-proofs" onclick="switchTab('proofs')">
+      <div class="nav-icon">📸</div>
+      <div>Proofs</div>
     </div>
     <div class="nav-item" id="nav-past" onclick="switchTab('past')">
       <div class="nav-icon">📑</div>
@@ -958,12 +1140,111 @@
   </nav>
 
   <script>
-    // SYNCHRONOUS AND UNIVERSAL SHA-256 HASH VERIFICATION
+    /* =========================================================
+       FIREBASE INITIALIZATION & REAL-TIME CLOUD DATABASE
+       ========================================================= */
+    const firebaseConfig = {
+      apiKey: "AIzaSyC2RAeIZmDeKhiN6E0tEseRMnpwHDLmEJA",
+      authDomain: "utility-rent-tracker.firebaseapp.com",
+      projectId: "utility-rent-tracker",
+      storageBucket: "utility-rent-tracker.firebasestorage.app",
+      messagingSenderId: "672476809733",
+      appId: "1:672476809733:web:7281a2c460a9fc6dbcea6c"
+    };
+
+    let db = null;
+    let isCloudReady = false;
+
+    try {
+      firebase.initializeApp(firebaseConfig);
+      db = firebase.firestore();
+      isCloudReady = true;
+    } catch (e) {
+      console.warn("Firebase Init Error:", e);
+    }
+
+    function updateCloudBadge(status) {
+      const el = document.getElementById('cloud-indicator');
+      if (!el) return;
+      if (status === 'online') {
+        el.innerText = '☁️ Synced';
+        el.className = 'cloud-badge online';
+      } else if (status === 'saving') {
+        el.innerText = '⏳ Syncing...';
+        el.className = 'cloud-badge';
+      } else {
+        el.innerText = '⚠️ Offline';
+        el.className = 'cloud-badge';
+      }
+    }
+
+    /* PUSH LOCAL CHANGES TO CLOUD */
+    async function pushToCloud() {
+      if (!db) return;
+      updateCloudBadge('saving');
+      try {
+        await db.collection("tracker_data").doc("shared_state").set({
+          meterReadings: meterReadings,
+          meterProofs: meterProofs,
+          acSessions: acSessions,
+          pastBills: pastBills,
+          partyDetails: partyDetails,
+          lastUpdated: new Date().toISOString()
+        }, { merge: true });
+        updateCloudBadge('online');
+      } catch (err) {
+        console.error("Cloud push failed:", err);
+        updateCloudBadge('offline');
+      }
+    }
+
+    /* LISTEN TO REAL-TIME UPDATES */
+    function subscribeToCloud() {
+      if (!db) return;
+      db.collection("tracker_data").doc("shared_state").onSnapshot((doc) => {
+        if (doc.exists) {
+          const data = doc.data();
+          if (data.meterReadings) {
+            meterReadings = data.meterReadings;
+            localStorage.setItem('meterReadings', JSON.stringify(meterReadings));
+          }
+          if (data.meterProofs) {
+            meterProofs = data.meterProofs;
+            localStorage.setItem('meterProofs', JSON.stringify(meterProofs));
+          }
+          if (data.acSessions) {
+            acSessions = data.acSessions;
+            localStorage.setItem('acSessions', JSON.stringify(acSessions));
+          }
+          if (data.pastBills) {
+            pastBills = data.pastBills;
+            localStorage.setItem('pastBills', JSON.stringify(pastBills));
+          }
+          if (data.partyDetails) {
+            partyDetails = data.partyDetails;
+            localStorage.setItem('partyDetails', JSON.stringify(partyDetails));
+          }
+          renderAC();
+          renderMeterHistory();
+          renderProofsGallery();
+          renderPastBills();
+          updatePartyDisplay();
+          updateCloudBadge('online');
+        } else {
+          pushToCloud();
+        }
+      }, (error) => {
+        console.warn("Firestore listener warning:", error);
+        updateCloudBadge('offline');
+      });
+    }
+
+    /* =========================================================
+       AUTHENTICATION & SECURITY
+       ========================================================= */
     const AUTH_USERS = {
-      // "ganesh k" or "ganesh": 819042Nehrunagar
       "ganesh k": "e9869005e0c31138d97dd8ccbc857c18e7ca8e8fb29877ac9d7738de42606fbe",
       "ganesh": "e9869005e0c31138d97dd8ccbc857c18e7ca8e8fb29877ac9d7738de42606fbe",
-      // "e praveen kumar" or "praveen": 819042Mathiyazhagan
       "e praveen kumar": "4a96d26f543d64de0165c0a0501ade9db702f30350a5e7930841fbdae42e367b",
       "praveen": "4a96d26f543d64de0165c0a0501ade9db702f30350a5e7930841fbdae42e367b"
     };
@@ -1000,10 +1281,7 @@
         return;
       }
 
-      // Compute hash using synchronous pure-JS sha256
       const hashed = computeHash(pass);
-
-      // Support direct string fallback in case JS library was blocked by network
       const isDirectMatch = (user.includes('ganesh') && pass === '819042Nehrunagar') || 
                             (user.includes('praveen') && pass === '819042Mathiyazhagan');
 
@@ -1012,6 +1290,7 @@
         localStorage.setItem('tracker_current_user', user);
         document.getElementById('auth-screen').style.display = 'none';
         errEl.style.display = 'none';
+        subscribeToCloud();
       } else {
         errEl.innerText = "Invalid Username or Password";
         errEl.style.display = 'block';
@@ -1022,6 +1301,7 @@
       const auth = localStorage.getItem('tracker_authenticated');
       if (auth === 'true') {
         document.getElementById('auth-screen').style.display = 'none';
+        subscribeToCloud();
       } else {
         document.getElementById('auth-screen').style.display = 'flex';
       }
@@ -1045,6 +1325,9 @@
       }
     });
 
+    /* =========================================================
+       DATA MODELS & STATE
+       ========================================================= */
     const CONFIG = {
       ratePerUnit: 8,
       rent: 12000,
@@ -1097,10 +1380,15 @@
     let pastBills = JSON.parse(localStorage.getItem('pastBills') || 'null');
     let acSessions = JSON.parse(localStorage.getItem('acSessions') || '[]');
     let meterReadings = JSON.parse(localStorage.getItem('meterReadings') || '[]');
+    let meterProofs = JSON.parse(localStorage.getItem('meterProofs') || '[]');
     let currentSession = JSON.parse(localStorage.getItem('currentSession') || 'null');
     let timerInterval = null;
     let viewingBill = null;
     let selectedPaymentMode = 'Cash';
+
+    // Temporary holding state during reading entry
+    let pendingReading = null;
+    let pendingCompressedImage = null;
 
     let partyDetails = JSON.parse(localStorage.getItem('partyDetails') || 'null') || {
       tenantName: 'K Ganesh',
@@ -1129,6 +1417,7 @@
 
       renderAC();
       renderMeterHistory();
+      renderProofsGallery();
       renderPastBills();
       updatePartyDisplay();
     }
@@ -1145,6 +1434,11 @@
         document.getElementById('tab-meter').classList.add('active');
         document.getElementById('nav-meter').classList.add('active');
         document.getElementById('header-title').innerText = 'Electricity Meter & Rent';
+      } else if (tab === 'proofs') {
+        document.getElementById('tab-proofs').classList.add('active');
+        document.getElementById('nav-proofs').classList.add('active');
+        document.getElementById('header-title').innerText = 'Meter Photo Proofs (30d)';
+        renderProofsGallery();
       } else {
         document.getElementById('tab-past').classList.add('active');
         document.getElementById('nav-past').classList.add('active');
@@ -1230,6 +1524,7 @@
         localStorage.removeItem('currentSession');
         clearInterval(timerInterval);
         updateOffDisplay();
+        pushToCloud();
       }
       renderAC();
     }
@@ -1320,25 +1615,170 @@
       `).join('') || '<div style="color: var(--text-muted); text-align: center; padding: 12px 0;">No sessions recorded yet.</div>';
     }
 
-    /* METER & RENT FUNCTIONS */
-    function saveMeterData() {
-      meterReadings.sort((a, b) => new Date(a.date) - new Date(b.date));
-      localStorage.setItem('meterReadings', JSON.stringify(meterReadings));
-    }
-
-    function saveMeterReading() {
+    /* =========================================================
+       METER READING & PHOTO PROOF WORKFLOW
+       ========================================================= */
+    function initiateSaveReading() {
       const date = document.getElementById('meter-date').value;
       const val = parseFloat(document.getElementById('meter-val').value);
 
       if (!date || isNaN(val)) {
-        alert('Please enter a valid date and meter value.');
+        alert('Please enter a valid date and numeric meter value.');
         return;
       }
 
-      meterReadings.push({ date, units: val });
-      saveMeterData();
+      pendingReading = { date, units: val };
+      pendingCompressedImage = null;
+
+      // Reset modal UI
+      document.getElementById('pending-reading-text').innerText = `${val} units on ${date}`;
+      document.getElementById('preview-box').style.display = 'none';
+      document.getElementById('confirm-save-btn').style.display = 'none';
+      document.getElementById('photo-upload-modal').classList.add('active');
+    }
+
+    // Compress client-side to ~50KB JPEG for lightning fast Firestore sync
+    function handleFileChosen(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          const maxDim = 900;
+          let w = img.width;
+          let h = img.height;
+
+          if (w > h) {
+            if (w > maxDim) {
+              h = Math.round((h * maxDim) / w);
+              w = maxDim;
+            }
+          } else {
+            if (h > maxDim) {
+              w = Math.round((w * maxDim) / h);
+              h = maxDim;
+            }
+          }
+
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+
+          // Compress to quality 0.65 JPEG
+          pendingCompressedImage = canvas.toDataURL('image/jpeg', 0.65);
+
+          document.getElementById('upload-preview-img').src = pendingCompressedImage;
+          document.getElementById('preview-box').style.display = 'block';
+          document.getElementById('confirm-save-btn').style.display = 'flex';
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function finalizeMeterReading(withPhoto) {
+      if (!pendingReading) return;
+
+      meterReadings.push({ date: pendingReading.date, units: pendingReading.units });
+      meterReadings.sort((a, b) => new Date(a.date) - new Date(b.date));
+      localStorage.setItem('meterReadings', JSON.stringify(meterReadings));
+
+      if (withPhoto && pendingCompressedImage) {
+        const proofEntry = {
+          id: 'proof-' + Date.now(),
+          date: pendingReading.date,
+          units: pendingReading.units,
+          imageData: pendingCompressedImage,
+          uploadedAt: Date.now() // for 30-day calculation
+        };
+        meterProofs.unshift(proofEntry);
+        localStorage.setItem('meterProofs', JSON.stringify(meterProofs));
+      }
+
+      document.getElementById('photo-upload-modal').classList.remove('active');
       document.getElementById('meter-val').value = '';
+      pendingReading = null;
+      pendingCompressedImage = null;
+
       renderMeterHistory();
+      renderProofsGallery();
+      pushToCloud();
+
+      alert("Meter reading saved and synced successfully!");
+    }
+
+    /* RENDER 30-DAY PROOFS GALLERY */
+    function renderProofsGallery() {
+      const container = document.getElementById('proofs-container');
+      if (!container) return;
+
+      const thirtyDaysMs = 30 * 24 * 60 * 60 * 1000;
+      const now = Date.now();
+
+      // Filter proofs from the last 30 days
+      const activeProofs = meterProofs.filter(p => {
+        const age = now - (p.uploadedAt || new Date(p.date).getTime());
+        return age <= thirtyDaysMs;
+      });
+
+      if (activeProofs.length === 0) {
+        container.innerHTML = `
+          <div class="card" style="text-align: center; color: var(--text-muted); padding: 30px 16px;">
+            <div style="font-size: 2.2rem; margin-bottom: 8px;">📷</div>
+            <div style="font-weight: 600;">No Meter Photos in the Last 30 Days</div>
+            <div style="font-size: 0.8rem; margin-top: 4px;">Attach photos when saving readings to see them logged here.</div>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = activeProofs.map((p, index) => {
+        const uploadTime = p.uploadedAt || new Date(p.date).getTime();
+        const daysRemaining = Math.max(0, Math.ceil((thirtyDaysMs - (now - uploadTime)) / (24 * 60 * 60 * 1000)));
+
+        return `
+          <div class="proof-card">
+            <div class="proof-header">
+              <div>
+                <span class="proof-info-title">${p.units} Units</span>
+                <span style="font-size: 0.8rem; color: var(--text-muted); margin-left: 6px;">(${p.date})</span>
+              </div>
+              <span class="proof-days-badge">${daysRemaining} days left</span>
+            </div>
+            
+            <div class="proof-img-container" onclick="openLightbox('${p.imageData}', '${p.units} Units recorded on ${p.date}')">
+              <img src="${p.imageData}" alt="Meter reading photo">
+            </div>
+
+            <div class="proof-meta">
+              <span>🔒 Verified Snapshot</span>
+              <button class="action-btn del" onclick="deleteMeterProof('${p.id}')">🗑️ Delete Proof</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function deleteMeterProof(proofId) {
+      if (!confirm("Delete this photo proof? (Use only if image is blurred or unclear)")) return;
+      meterProofs = meterProofs.filter(p => p.id !== proofId);
+      localStorage.setItem('meterProofs', JSON.stringify(meterProofs));
+      renderProofsGallery();
+      pushToCloud();
+    }
+
+    function openLightbox(imgSrc, caption) {
+      document.getElementById('lightbox-img').src = imgSrc;
+      document.getElementById('lightbox-caption').innerText = caption;
+      document.getElementById('photo-lightbox').classList.add('active');
+    }
+
+    function closeLightbox() {
+      document.getElementById('photo-lightbox').classList.remove('active');
     }
 
     function editMeterReading(index) {
@@ -1372,8 +1812,13 @@
       }
     }
 
+    function saveMeterData() {
+      meterReadings.sort((a, b) => new Date(a.date) - new Date(b.date));
+      localStorage.setItem('meterReadings', JSON.stringify(meterReadings));
+      pushToCloud();
+    }
+
     function renderMeterHistory() {
-      saveMeterData();
       const list = document.getElementById('meter-history-list');
 
       if (meterReadings.length === 0) {
@@ -1448,7 +1893,7 @@
       const totalBill = CONFIG.rent + CONFIG.water + elecCost;
       const periodStr = `${formatDateDisplay(baseline.date)} – ${formatDateDisplay(latest.date)}`;
 
-      const confirmMsg = `Close and archive this cycle?
+      const confirmMsg = `Close and archive this cycle to Cloud?
 
 Period: ${periodStr}
 Final Reading: ${latest.units} units (${totalUnits} units consumed)
@@ -1457,7 +1902,7 @@ Total Payable: ₹${totalBill.toLocaleString('en-IN')}
 This will:
 1. Preserve all day-by-day readings and AC logs permanently in 'Past Bills'
 2. Set ${latest.units} units as the new baseline for next month
-3. Reset current cycle usage counter to 0.`;
+3. Reset current cycle usage counter to 0 across all phones.`;
 
       if (!confirm(confirmMsg)) return;
 
@@ -1503,6 +1948,7 @@ This will:
       renderPastBills();
       renderMeterHistory();
       renderAC();
+      pushToCloud();
 
       alert(`Cycle successfully archived! Your new baseline is now ${latest.units} units on ${latest.date}.`);
       switchTab('past');
@@ -1573,7 +2019,8 @@ This will:
 
       localStorage.setItem('partyDetails', JSON.stringify(partyDetails));
       updatePartyDisplay();
-      alert("Tenant & Landlord information saved for IT records!");
+      pushToCloud();
+      alert("Tenant & Landlord information saved and synced to Cloud!");
     }
 
     /* INVOICE & AUDIT MODAL */
@@ -1673,6 +2120,7 @@ This will:
       if (viewingBill && viewingBill.id) {
         viewingBill.paymentMode = selectedPaymentMode;
         localStorage.setItem('pastBills', JSON.stringify(pastBills));
+        pushToCloud();
         renderPastBills();
       }
     }
@@ -1817,6 +2265,7 @@ ${logStr}
       const data = {
         acSessions,
         meterReadings,
+        meterProofs,
         pastBills,
         partyDetails,
         exportedAt: new Date().toISOString()
