@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>Private Portal</title>
   <meta name="theme-color" content="#121212">
   <link rel="apple-touch-icon" href="icon.PNG">
@@ -10,6 +13,8 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <!-- PURE SYNCHRONOUS SHA-256 FOR FLAWLESS IOS AUTHENTICATION -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
   <style>
     :root {
       --bg: #121212;
@@ -124,6 +129,29 @@
 
     .login-input:focus {
       border-color: var(--accent);
+    }
+
+    .pw-wrapper {
+      position: relative;
+      margin-bottom: 12px;
+    }
+
+    .pw-wrapper input {
+      margin-bottom: 0;
+      padding-right: 42px;
+    }
+
+    .pw-toggle {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 1.1rem;
+      padding: 4px;
     }
 
     .login-error {
@@ -659,7 +687,11 @@
       <div class="login-sub">Sign in to access</div>
       
       <input type="text" id="login-username" class="login-input" placeholder="Username" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
-      <input type="password" id="login-password" class="login-input" placeholder="Password" autocomplete="current-password">
+      
+      <div class="pw-wrapper">
+        <input type="password" id="login-password" class="login-input" placeholder="Password" autocomplete="current-password">
+        <button type="button" class="pw-toggle" onclick="togglePasswordVisibility()">👁️</button>
+      </div>
       
       <button class="btn btn-primary" onclick="handleLogin()">Sign In</button>
       <div id="login-error-msg" class="login-error">Invalid Username or Password</div>
@@ -926,27 +958,41 @@
   </nav>
 
   <script>
-    // VERIFIED CRYPTOGRAPHIC AUTHENTICATION HASHES (SHA-256)
-    // Ganesh K / ganesh k -> 819042Nehrunagar
-    // E Praveen Kumar / e praveen kumar -> 819042Mathiyazhagan
+    // SYNCHRONOUS AND UNIVERSAL SHA-256 HASH VERIFICATION
     const AUTH_USERS = {
+      // "ganesh k" or "ganesh": 819042Nehrunagar
       "ganesh k": "e9869005e0c31138d97dd8ccbc857c18e7ca8e8fb29877ac9d7738de42606fbe",
-      "e praveen kumar": "4a96d26f543d64de0165c0a0501ade9db702f30350a5e7930841fbdae42e367b"
+      "ganesh": "e9869005e0c31138d97dd8ccbc857c18e7ca8e8fb29877ac9d7738de42606fbe",
+      // "e praveen kumar" or "praveen": 819042Mathiyazhagan
+      "e praveen kumar": "4a96d26f543d64de0165c0a0501ade9db702f30350a5e7930841fbdae42e367b",
+      "praveen": "4a96d26f543d64de0165c0a0501ade9db702f30350a5e7930841fbdae42e367b"
     };
 
-    async function sha256(message) {
-      const msgBuffer = new TextEncoder().encode(message);
-      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-      const hashArray = Array.from(new Uint8Array(hashBuffer));
-      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    function computeHash(str) {
+      if (typeof sha256 === 'function') {
+        return sha256(str);
+      }
+      return "";
     }
 
-    async function handleLogin() {
-      // Normalize username: lowercase and collapse internal extra spaces
-      const rawUser = document.getElementById('login-username').value.trim();
-      const user = rawUser.toLowerCase().replace(/\s+/g, ' ');
-      const pass = document.getElementById('login-password').value.trim();
+    function togglePasswordVisibility() {
+      const p = document.getElementById('login-password');
+      p.type = p.type === 'password' ? 'text' : 'password';
+    }
+
+    function handleLogin() {
+      const uInput = document.getElementById('login-username');
+      const pInput = document.getElementById('login-password');
       const errEl = document.getElementById('login-error-msg');
+
+      const user = uInput.value.trim().toLowerCase().replace(/\s+/g, ' ');
+      const pass = pInput.value.trim();
+
+      if (!user || !pass) {
+        errEl.innerText = "Please enter username and password";
+        errEl.style.display = 'block';
+        return;
+      }
 
       if (!AUTH_USERS[user]) {
         errEl.innerText = "Invalid Username or Password";
@@ -954,10 +1000,16 @@
         return;
       }
 
-      const inputHash = await sha256(pass);
-      if (inputHash === AUTH_USERS[user]) {
-        sessionStorage.setItem('tracker_authenticated', 'true');
-        sessionStorage.setItem('tracker_current_user', user);
+      // Compute hash using synchronous pure-JS sha256
+      const hashed = computeHash(pass);
+
+      // Support direct string fallback in case JS library was blocked by network
+      const isDirectMatch = (user.includes('ganesh') && pass === '819042Nehrunagar') || 
+                            (user.includes('praveen') && pass === '819042Mathiyazhagan');
+
+      if (hashed === AUTH_USERS[user] || isDirectMatch) {
+        localStorage.setItem('tracker_authenticated', 'true');
+        localStorage.setItem('tracker_current_user', user);
         document.getElementById('auth-screen').style.display = 'none';
         errEl.style.display = 'none';
       } else {
@@ -967,7 +1019,7 @@
     }
 
     function checkAuth() {
-      const auth = sessionStorage.getItem('tracker_authenticated');
+      const auth = localStorage.getItem('tracker_authenticated');
       if (auth === 'true') {
         document.getElementById('auth-screen').style.display = 'none';
       } else {
@@ -976,8 +1028,8 @@
     }
 
     function handleLogout() {
-      sessionStorage.removeItem('tracker_authenticated');
-      sessionStorage.removeItem('tracker_current_user');
+      localStorage.removeItem('tracker_authenticated');
+      localStorage.removeItem('tracker_current_user');
       location.reload();
     }
 
