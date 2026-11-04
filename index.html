@@ -88,6 +88,25 @@
       background: #064e3b33;
     }
 
+    .role-tag {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-left: 6px;
+    }
+
+    .role-tag.tenant {
+      background: #1e3a8a;
+      color: #93c5fd;
+    }
+
+    .role-tag.landlord {
+      background: #78350f;
+      color: #fde68a;
+    }
+
     .logout-btn {
       background: none;
       border: 1px solid var(--border);
@@ -135,7 +154,33 @@
     .login-sub {
       font-size: 0.85rem;
       color: var(--text-muted);
-      margin-bottom: 20px;
+      margin-bottom: 18px;
+    }
+
+    .role-select-box {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .role-option {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid var(--border);
+      background: var(--card-subtle);
+      border-radius: 8px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+    }
+
+    .role-option.selected {
+      border-color: var(--accent);
+      background: #1e3a8a33;
+      color: #60a5fa;
     }
 
     .login-input {
@@ -812,12 +857,22 @@
 </head>
 <body>
 
-  <!-- SECURE AUTH LOGIN SCREEN -->
+  <!-- SECURE AUTH LOGIN SCREEN WITH ROLE SELECTOR -->
   <div id="auth-screen">
     <div class="login-card">
       <div class="login-icon">🔐</div>
       <div class="login-title">Private Access</div>
-      <div class="login-sub">Sign in to access</div>
+      <div class="login-sub">Select your role and sign in</div>
+
+      <!-- Role Selection Buttons -->
+      <div class="role-select-box">
+        <div id="role-tenant-btn" class="role-option selected" onclick="selectLoginRole('tenant')">
+          👤 Tenant (Full)
+        </div>
+        <div id="role-landlord-btn" class="role-option" onclick="selectLoginRole('landlord')">
+          🏠 Landlord (View Only)
+        </div>
+      </div>
       
       <input type="text" id="login-username" class="login-input" placeholder="Username" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
       
@@ -827,14 +882,17 @@
       </div>
       
       <button class="btn btn-primary" onclick="handleLogin()">Sign In</button>
-      <div id="login-error-msg" class="login-error">Invalid Username or Password</div>
+      <div id="login-error-msg" class="login-error">Invalid Username, Password, or Role mismatch</div>
     </div>
   </div>
 
   <!-- AUTHENTICATED APP CONTENT -->
   <header>
     <div id="cloud-indicator" class="cloud-badge">☁️ Connecting...</div>
-    <h1 id="header-title">AC Tracker</h1>
+    <h1>
+      <span id="header-title">AC Tracker</span>
+      <span id="header-role-badge" class="role-tag tenant">TENANT</span>
+    </h1>
     <button class="logout-btn" onclick="handleLogout()">Logout</button>
   </header>
 
@@ -847,7 +905,11 @@
       <div id="timer-label" style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px;">TODAY RUNTIME</div>
       <div id="current-timer" style="font-size: 2.6rem; font-weight: 800; font-variant-numeric: tabular-nums; margin-bottom: 14px;">00:00:00</div>
       
+      <!-- Tenant can toggle; Landlord sees restricted button -->
       <button id="toggle-ac-btn" class="btn btn-green" onclick="toggleAC()">LOG ON</button>
+      <div id="landlord-ac-notice" style="display: none; font-size: 0.75rem; color: var(--orange); margin-top: 6px; font-weight: 600;">
+        🔒 View-Only Mode: Only tenant can start/stop AC tracker
+      </div>
       
       <div style="margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; text-align: left;">
         <div>
@@ -889,13 +951,23 @@
 
   <!-- TAB 2: RENT & METER -->
   <div id="tab-meter" class="tab-content">
-    <div class="card">
+    
+    <!-- TENANT-ONLY ADD READING CARD -->
+    <div class="card" id="tenant-add-reading-card">
       <div class="card-title">Add Reading</div>
       <label>Reading Date</label>
       <input type="date" id="meter-date">
       <label>Meter Units</label>
       <input type="number" id="meter-val" placeholder="e.g. 314" step="any">
       <button class="btn btn-primary" onclick="initiateSaveReading()">Save Reading</button>
+    </div>
+
+    <!-- LANDLORD READ-ONLY NOTICE -->
+    <div class="card" id="landlord-reading-card" style="display: none; background: #1a1e29; border-color: #1e3a8a;">
+      <div style="font-size: 0.85rem; color: #93c5fd; font-weight: 600; text-align: center;">
+        👁️ Viewing as Landlord (Read-Only)<br>
+        <span style="font-size: 0.75rem; font-weight: 400; color: var(--text-muted);">New meter readings and unit updates are logged by the tenant.</span>
+      </div>
     </div>
 
     <!-- PROVISIONAL BILL CARD -->
@@ -922,11 +994,14 @@
       </div>
     </div>
 
-    <!-- OFFICIAL BILLING & CYCLE SETTLEMENT -->
+    <!-- BILLING MANAGEMENT -->
     <div class="card">
       <div class="card-title">Billing & Cycle Management</div>
       <button class="btn btn-green" onclick="showInvoiceModal(null)">📑 View Rent with EB Bill Statement</button>
-      <button class="btn btn-orange" style="margin-top: 10px;" onclick="endCurrentMonthCycle()">🏁 End Month Cycle & Archive</button>
+      
+      <!-- Tenant Only Cycle Settler -->
+      <button id="tenant-end-cycle-btn" class="btn btn-orange" style="margin-top: 10px;" onclick="endCurrentMonthCycle()">🏁 End Month Cycle & Archive</button>
+      
       <button class="btn btn-primary" style="margin-top: 10px;" onclick="copyMonthlyReport()">📋 Copy Monthly Report for Gemini</button>
       <button class="btn btn-subtle" onclick="downloadBackup()">📥 Download Backup (.json)</button>
     </div>
@@ -986,7 +1061,6 @@
         Take a picture or choose from photos to verify reading <strong id="pending-reading-text" style="color: var(--accent);">-- u</strong>.
       </p>
 
-      <!-- Hidden standard inputs for camera and gallery -->
       <input type="file" id="camera-file-input" accept="image/*" capture="environment" style="display: none;" onchange="handleFileChosen(event)">
       <input type="file" id="gallery-file-input" accept="image/*" style="display: none;" onchange="handleFileChosen(event)">
 
@@ -1115,7 +1189,7 @@
         <button id="img-share-btn" class="btn btn-primary" onclick="shareAsImage()" style="font-size: 0.85rem; padding: 10px;">📸 Save / Share Image</button>
         <button class="btn btn-green" onclick="window.print()" style="font-size: 0.85rem; padding: 10px;">🖨️ Print / PDF</button>
       </div>
-      <button class="btn btn-subtle edit-it-btn" onclick="editPartyDetails()" style="margin-top: 8px; font-size: 0.8rem; padding: 8px; color: #2563eb; border-color: #93c5fd;">✏️ Edit Tenant & Landlord Info</button>
+      <button id="edit-parties-btn" class="btn btn-subtle edit-it-btn" onclick="editPartyDetails()" style="margin-top: 8px; font-size: 0.8rem; padding: 8px; color: #2563eb; border-color: #93c5fd;">✏️ Edit Tenant & Landlord Info</button>
       <button class="btn btn-subtle invoice-close-btn" onclick="closeInvoiceModal()" style="margin-top: 6px; font-size: 0.8rem; padding: 8px; color: #0f172a; border-color: #cbd5e1;">Close</button>
     </div>
   </div>
@@ -1141,7 +1215,7 @@
 
   <script>
     /* =========================================================
-       FIREBASE INITIALIZATION & REAL-TIME CLOUD DATABASE
+       FIREBASE CONFIGURATION
        ========================================================= */
     const firebaseConfig = {
       apiKey: "AIzaSyC2RAeIZmDeKhiN6E0tEseRMnpwHDLmEJA",
@@ -1178,7 +1252,6 @@
       }
     }
 
-    /* PUSH LOCAL CHANGES TO CLOUD */
     async function pushToCloud() {
       if (!db) return;
       updateCloudBadge('saving');
@@ -1198,7 +1271,6 @@
       }
     }
 
-    /* LISTEN TO REAL-TIME UPDATES */
     function subscribeToCloud() {
       if (!db) return;
       db.collection("tracker_data").doc("shared_state").onSnapshot((doc) => {
@@ -1240,13 +1312,22 @@
     }
 
     /* =========================================================
-       AUTHENTICATION & SECURITY
+       ROLE-BASED AUTHENTICATION & RESTRICTIONS
        ========================================================= */
+    let selectedLoginRole = 'tenant'; // 'tenant' or 'landlord'
+    let currentActiveRole = 'tenant';
+
+    function selectLoginRole(role) {
+      selectedLoginRole = role;
+      document.getElementById('role-tenant-btn').className = role === 'tenant' ? 'role-option selected' : 'role-option';
+      document.getElementById('role-landlord-btn').className = role === 'landlord' ? 'role-option selected' : 'role-option';
+    }
+
     const AUTH_USERS = {
-      "ganesh k": "e9869005e0c31138d97dd8ccbc857c18e7ca8e8fb29877ac9d7738de42606fbe",
-      "ganesh": "e9869005e0c31138d97dd8ccbc857c18e7ca8e8fb29877ac9d7738de42606fbe",
-      "e praveen kumar": "4a96d26f543d64de0165c0a0501ade9db702f30350a5e7930841fbdae42e367b",
-      "praveen": "4a96d26f543d64de0165c0a0501ade9db702f30350a5e7930841fbdae42e367b"
+      "ganesh k": { hash: "e9869005e0c31138d97dd8ccbc857c18e7ca8e8fb29877ac9d7738de42606fbe", role: "tenant", directPass: "819042Nehrunagar" },
+      "ganesh": { hash: "e9869005e0c31138d97dd8ccbc857c18e7ca8e8fb29877ac9d7738de42606fbe", role: "tenant", directPass: "819042Nehrunagar" },
+      "e praveen kumar": { hash: "4a96d26f543d64de0165c0a0501ade9db702f30350a5e7930841fbdae42e367b", role: "landlord", directPass: "819042Mathiyazhagan" },
+      "praveen": { hash: "4a96d26f543d64de0165c0a0501ade9db702f30350a5e7930841fbdae42e367b", role: "landlord", directPass: "819042Mathiyazhagan" }
     };
 
     function computeHash(str) {
@@ -1275,19 +1356,30 @@
         return;
       }
 
-      if (!AUTH_USERS[user]) {
+      const account = AUTH_USERS[user];
+      if (!account) {
         errEl.innerText = "Invalid Username or Password";
         errEl.style.display = 'block';
         return;
       }
 
-      const hashed = computeHash(pass);
-      const isDirectMatch = (user.includes('ganesh') && pass === '819042Nehrunagar') || 
-                            (user.includes('praveen') && pass === '819042Mathiyazhagan');
+      // Role check: Ensure Tenant logging into tenant, Landlord logging into landlord
+      if (account.role !== selectedLoginRole) {
+        errEl.innerText = `This account belongs to ${account.role.toUpperCase()}. Please select the correct role above.`;
+        errEl.style.display = 'block';
+        return;
+      }
 
-      if (hashed === AUTH_USERS[user] || isDirectMatch) {
+      const hashed = computeHash(pass);
+      const isDirectMatch = (pass === account.directPass);
+
+      if (hashed === account.hash || isDirectMatch) {
+        currentActiveRole = account.role;
         localStorage.setItem('tracker_authenticated', 'true');
         localStorage.setItem('tracker_current_user', user);
+        localStorage.setItem('tracker_user_role', currentActiveRole);
+
+        applyRoleRestrictions();
         document.getElementById('auth-screen').style.display = 'none';
         errEl.style.display = 'none';
         subscribeToCloud();
@@ -1299,7 +1391,10 @@
 
     function checkAuth() {
       const auth = localStorage.getItem('tracker_authenticated');
+      const savedRole = localStorage.getItem('tracker_user_role');
       if (auth === 'true') {
+        currentActiveRole = savedRole || 'tenant';
+        applyRoleRestrictions();
         document.getElementById('auth-screen').style.display = 'none';
         subscribeToCloud();
       } else {
@@ -1310,20 +1405,39 @@
     function handleLogout() {
       localStorage.removeItem('tracker_authenticated');
       localStorage.removeItem('tracker_current_user');
+      localStorage.removeItem('tracker_user_role');
       location.reload();
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      const uInput = document.getElementById('login-username');
-      const pInput = document.getElementById('login-password');
-      if (uInput && pInput) {
-        [uInput, pInput].forEach(inp => {
-          inp.addEventListener('keyup', (e) => {
-            if (e.key === 'Enter') handleLogin();
-          });
-        });
+    function applyRoleRestrictions() {
+      const isTenant = (currentActiveRole === 'tenant');
+      const roleBadge = document.getElementById('header-role-badge');
+
+      if (isTenant) {
+        roleBadge.innerText = 'TENANT';
+        roleBadge.className = 'role-tag tenant';
+
+        // Show tenant controls
+        document.getElementById('tenant-add-reading-card').style.display = 'block';
+        document.getElementById('landlord-reading-card').style.display = 'none';
+        document.getElementById('tenant-end-cycle-btn').style.display = 'flex';
+        document.getElementById('toggle-ac-btn').style.display = 'flex';
+        document.getElementById('landlord-ac-notice').style.display = 'none';
+      } else {
+        roleBadge.innerText = 'LANDLORD';
+        roleBadge.className = 'role-tag landlord';
+
+        // Hide tenant controls / activate read-only mode
+        document.getElementById('tenant-add-reading-card').style.display = 'none';
+        document.getElementById('landlord-reading-card').style.display = 'block';
+        document.getElementById('tenant-end-cycle-btn').style.display = 'none';
+        document.getElementById('toggle-ac-btn').style.display = 'none';
+        document.getElementById('landlord-ac-notice').style.display = 'block';
       }
-    });
+
+      renderMeterHistory();
+      renderProofsGallery();
+    }
 
     /* =========================================================
        DATA MODELS & STATE
@@ -1386,7 +1500,6 @@
     let viewingBill = null;
     let selectedPaymentMode = 'Cash';
 
-    // Temporary holding state during reading entry
     let pendingReading = null;
     let pendingCompressedImage = null;
 
@@ -1476,6 +1589,11 @@
     }
 
     function toggleAC() {
+      if (currentActiveRole !== 'tenant') {
+        alert("View-Only: Only the tenant can operate the AC timer.");
+        return;
+      }
+
       if (!currentSession) {
         currentSession = { startTime: new Date().toISOString() };
         localStorage.setItem('currentSession', JSON.stringify(currentSession));
@@ -1619,6 +1737,11 @@
        METER READING & PHOTO PROOF WORKFLOW
        ========================================================= */
     function initiateSaveReading() {
+      if (currentActiveRole !== 'tenant') {
+        alert("View-Only: Only the tenant can add meter readings.");
+        return;
+      }
+
       const date = document.getElementById('meter-date').value;
       const val = parseFloat(document.getElementById('meter-val').value);
 
@@ -1630,14 +1753,12 @@
       pendingReading = { date, units: val };
       pendingCompressedImage = null;
 
-      // Reset modal UI
       document.getElementById('pending-reading-text').innerText = `${val} units on ${date}`;
       document.getElementById('preview-box').style.display = 'none';
       document.getElementById('confirm-save-btn').style.display = 'none';
       document.getElementById('photo-upload-modal').classList.add('active');
     }
 
-    // Compress client-side to ~50KB JPEG for lightning fast Firestore sync
     function handleFileChosen(event) {
       const file = event.target.files[0];
       if (!file) return;
@@ -1668,7 +1789,6 @@
           const ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0, w, h);
 
-          // Compress to quality 0.65 JPEG
           pendingCompressedImage = canvas.toDataURL('image/jpeg', 0.65);
 
           document.getElementById('upload-preview-img').src = pendingCompressedImage;
@@ -1693,7 +1813,7 @@
           date: pendingReading.date,
           units: pendingReading.units,
           imageData: pendingCompressedImage,
-          uploadedAt: Date.now() // for 30-day calculation
+          uploadedAt: Date.now()
         };
         meterProofs.unshift(proofEntry);
         localStorage.setItem('meterProofs', JSON.stringify(meterProofs));
@@ -1711,15 +1831,15 @@
       alert("Meter reading saved and synced successfully!");
     }
 
-    /* RENDER 30-DAY PROOFS GALLERY */
+    /* RENDER 30-DAY PROOFS GALLERY WITH ROLE PERMISSIONS */
     function renderProofsGallery() {
       const container = document.getElementById('proofs-container');
       if (!container) return;
 
       const thirtyDaysMs = 30 * 24 * 60 * 60 * 1000;
       const now = Date.now();
+      const isTenant = (currentActiveRole === 'tenant');
 
-      // Filter proofs from the last 30 days
       const activeProofs = meterProofs.filter(p => {
         const age = now - (p.uploadedAt || new Date(p.date).getTime());
         return age <= thirtyDaysMs;
@@ -1736,7 +1856,7 @@
         return;
       }
 
-      container.innerHTML = activeProofs.map((p, index) => {
+      container.innerHTML = activeProofs.map((p) => {
         const uploadTime = p.uploadedAt || new Date(p.date).getTime();
         const daysRemaining = Math.max(0, Math.ceil((thirtyDaysMs - (now - uploadTime)) / (24 * 60 * 60 * 1000)));
 
@@ -1756,7 +1876,7 @@
 
             <div class="proof-meta">
               <span>🔒 Verified Snapshot</span>
-              <button class="action-btn del" onclick="deleteMeterProof('${p.id}')">🗑️ Delete Proof</button>
+              ${isTenant ? `<button class="action-btn del" onclick="deleteMeterProof('${p.id}')">🗑️ Delete Proof</button>` : `<span style="font-size: 0.72rem; color: var(--text-muted);">Read-Only</span>`}
             </div>
           </div>
         `;
@@ -1764,6 +1884,10 @@
     }
 
     function deleteMeterProof(proofId) {
+      if (currentActiveRole !== 'tenant') {
+        alert("View-Only: Only tenant can delete meter photos.");
+        return;
+      }
       if (!confirm("Delete this photo proof? (Use only if image is blurred or unclear)")) return;
       meterProofs = meterProofs.filter(p => p.id !== proofId);
       localStorage.setItem('meterProofs', JSON.stringify(meterProofs));
@@ -1782,6 +1906,11 @@
     }
 
     function editMeterReading(index) {
+      if (currentActiveRole !== 'tenant') {
+        alert("View-Only: Only the tenant can edit meter readings.");
+        return;
+      }
+
       const item = meterReadings[index];
       if (!item) return;
 
@@ -1805,6 +1934,11 @@
     }
 
     function deleteMeterReading(index) {
+      if (currentActiveRole !== 'tenant') {
+        alert("View-Only: Only the tenant can delete meter readings.");
+        return;
+      }
+
       if (confirm(`Delete reading for ${meterReadings[index].date} (${meterReadings[index].units} u)?`)) {
         meterReadings.splice(index, 1);
         saveMeterData();
@@ -1820,6 +1954,7 @@
 
     function renderMeterHistory() {
       const list = document.getElementById('meter-history-list');
+      const isTenant = (currentActiveRole === 'tenant');
 
       if (meterReadings.length === 0) {
         list.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 12px 0;">No readings logged.</div>';
@@ -1854,8 +1989,10 @@
             </div>
             <div style="display: flex; align-items: center; gap: 8px;">
               <span style="font-weight: 700; margin-right: 4px;">${item.units} u</span>
-              <button class="action-btn edit" onclick="editMeterReading(${i})">✎ Edit</button>
-              <button class="action-btn del" onclick="deleteMeterReading(${i})">✕</button>
+              ${isTenant ? `
+                <button class="action-btn edit" onclick="editMeterReading(${i})">✎ Edit</button>
+                <button class="action-btn del" onclick="deleteMeterReading(${i})">✕</button>
+              ` : ''}
             </div>
           </div>
         `;
@@ -1881,6 +2018,11 @@
 
     /* END MONTH CYCLE & ARCHIVE */
     function endCurrentMonthCycle() {
+      if (currentActiveRole !== 'tenant') {
+        alert("View-Only: Only tenant can close and archive the billing cycle.");
+        return;
+      }
+
       if (meterReadings.length < 2) {
         alert("You need at least a baseline and a final meter reading before closing the cycle.");
         return;
@@ -1997,6 +2139,11 @@ This will:
     }
 
     function editPartyDetails() {
+      if (currentActiveRole !== 'tenant') {
+        alert("View-Only: Only tenant can edit property details.");
+        return;
+      }
+
       const tName = prompt("Your Legal Name (as per PAN):", partyDetails.tenantName);
       if (tName === null) return;
       const tPhone = prompt("Your Contact Phone Number:", partyDetails.tenantPhone);
@@ -2110,6 +2257,13 @@ This will:
       auditContainer.innerHTML = auditLogHtml;
       updatePartyDisplay();
       updatePaymentFooter();
+
+      // Only tenant can edit parties info
+      const editBtn = document.getElementById('edit-parties-btn');
+      if (editBtn) {
+        editBtn.style.display = (currentActiveRole === 'tenant') ? 'block' : 'none';
+      }
+
       document.getElementById('invoice-modal').classList.add('active');
     }
 
