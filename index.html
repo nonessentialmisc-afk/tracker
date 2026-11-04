@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Utility & Rent Tracker</title>
+  <title>Private Portal</title>
   <meta name="theme-color" content="#121212">
   <link rel="apple-touch-icon" href="icon.PNG">
   <link rel="icon" type="image/png" href="icon.PNG">
@@ -104,7 +104,7 @@
     }
 
     .login-sub {
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       color: var(--text-muted);
       margin-bottom: 20px;
     }
@@ -656,9 +656,9 @@
     <div class="login-card">
       <div class="login-icon">🔐</div>
       <div class="login-title">Private Access</div>
-      <div class="login-sub">Sign in to access meter readings & bills</div>
+      <div class="login-sub">Sign in to access</div>
       
-      <input type="text" id="login-username" class="login-input" placeholder="User Name (e.g. Ganesh K)" autocomplete="off">
+      <input type="text" id="login-username" class="login-input" placeholder="Username" autocomplete="off" spellcheck="false">
       <input type="password" id="login-password" class="login-input" placeholder="Password" autocomplete="current-password">
       
       <button class="btn btn-primary" onclick="handleLogin()">Sign In</button>
@@ -926,9 +926,7 @@
   </nav>
 
   <script>
-    // SECURE CREDENTIAL HASHES (SHA-256)
-    // Ganesh K -> 819042Nehrunagar
-    // E Praveen Kumar -> 819042Mathiyazhagan
+    // SECURE CRYPTOGRAPHIC AUTHENTICATION (SHA-256)
     const AUTH_USERS = {
       "ganesh k": "5a415ff6ee8670cb4c82b9e6fa436f564dcfa6ae55fe2b730628e932bcefebe1",
       "e praveen kumar": "e6fbbec7c52ae9289255bb1e06fa99595a820ca8f44ff535c82ff3a8936940d9"
@@ -978,6 +976,19 @@
       sessionStorage.removeItem('tracker_current_user');
       location.reload();
     }
+
+    // Press Enter to submit on either field
+    document.addEventListener('DOMContentLoaded', () => {
+      const uInput = document.getElementById('login-username');
+      const pInput = document.getElementById('login-password');
+      if (uInput && pInput) {
+        [uInput, pInput].forEach(inp => {
+          inp.addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') handleLogin();
+          });
+        });
+      }
+    });
 
     const CONFIG = {
       ratePerUnit: 8,
@@ -1438,7 +1449,7 @@ This will:
       renderMeterHistory();
       renderAC();
 
-      alert(`Cycle successfully archived! Your new baseline is now ${latest.units} units on ${latest.date}. You can view the day-by-day log anytime in Past Bills.`);
+      alert(`Cycle successfully archived! Your new baseline is now ${latest.units} units on ${latest.date}.`);
       switchTab('past');
     }
 
