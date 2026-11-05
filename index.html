@@ -28,6 +28,7 @@
       --green: #10b981;
       --orange: #f59e0b;
       --red: #ef4444;
+      --purple: #8b5cf6;
       --text-main: #f3f4f6;
       --text-muted: #9ca3af;
       --border: #374151;
@@ -49,7 +50,7 @@
 
     header {
       background-color: var(--card-bg);
-      padding: 14px 16px;
+      padding: 12px 16px;
       border-bottom: 1px solid var(--border);
       position: sticky;
       top: 0;
@@ -60,24 +61,28 @@
     }
 
     header h1 {
-      font-size: 1.05rem;
+      font-size: 1rem;
       font-weight: 700;
       letter-spacing: 0.5px;
       text-align: center;
       flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
     }
 
     .cloud-badge {
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       font-weight: 600;
-      padding: 3px 8px;
+      padding: 3px 6px;
       border-radius: 6px;
       background: #1e293b;
       color: #94a3b8;
       border: 1px solid var(--border);
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 3px;
     }
 
     .cloud-badge.online {
@@ -87,31 +92,42 @@
     }
 
     .role-tag {
-      font-size: 0.68rem;
+      font-size: 0.65rem;
       font-weight: 700;
       text-transform: uppercase;
       padding: 2px 6px;
       border-radius: 4px;
-      margin-left: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
     }
 
     .role-tag.tenant {
       background: #1e3a8a;
       color: #93c5fd;
+      border: 1px solid #2563eb;
     }
 
     .role-tag.landlord {
       background: #78350f;
       color: #fde68a;
+      border: 1px solid #d97706;
+    }
+
+    .role-tag.admin {
+      background: #4c1d95;
+      color: #ddd6fe;
+      border: 1px solid #8b5cf6;
     }
 
     .logout-btn {
       background: none;
       border: 1px solid var(--border);
       color: var(--text-muted);
-      padding: 5px 10px;
+      padding: 4px 8px;
       border-radius: 6px;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       cursor: pointer;
     }
 
@@ -132,7 +148,7 @@
       background: var(--card-bg);
       border: 1px solid var(--border);
       border-radius: 14px;
-      padding: 26px 20px;
+      padding: 24px 20px;
       width: 100%;
       max-width: 370px;
       text-align: center;
@@ -141,14 +157,14 @@
 
     .auth-tab-switch {
       display: flex;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       border-bottom: 1px solid var(--border);
     }
 
     .auth-tab-btn {
       flex: 1;
       padding: 8px 0;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       font-weight: 700;
       color: var(--text-muted);
       cursor: pointer;
@@ -162,18 +178,18 @@
 
     .role-select-box {
       display: flex;
-      gap: 8px;
+      gap: 6px;
       margin-bottom: 14px;
     }
 
     .role-option {
       flex: 1;
-      padding: 9px;
+      padding: 8px 4px;
       border: 1px solid var(--border);
       background: var(--card-subtle);
       border-radius: 8px;
       color: var(--text-muted);
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       font-weight: 600;
       cursor: pointer;
       text-align: center;
@@ -314,6 +330,11 @@
 
     .btn-orange {
       background-color: #d97706;
+      color: #fff;
+    }
+
+    .btn-purple {
+      background-color: var(--purple);
       color: #fff;
     }
 
@@ -509,6 +530,118 @@
       color: var(--text-muted);
     }
 
+    /* =========================================================
+       RUBBER STAMP SEALS (PAID & DUE)
+       ========================================================= */
+    .rubber-stamp {
+      position: absolute;
+      top: 12px;
+      right: 18px;
+      padding: 6px 12px;
+      font-weight: 900;
+      font-size: 1.05rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      border-radius: 8px;
+      transform: rotate(-14deg);
+      opacity: 0.92;
+      pointer-events: none;
+      user-select: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      line-height: 1.1;
+      z-index: 5;
+    }
+
+    .stamp-paid {
+      color: #059669;
+      border: 3.5px double #059669;
+      background: rgba(16, 185, 129, 0.08);
+      box-shadow: 0 0 0 1px #059669 inset;
+    }
+
+    .stamp-due {
+      color: #dc2626;
+      border: 3.5px double #dc2626;
+      background: rgba(239, 68, 68, 0.08);
+      box-shadow: 0 0 0 1px #dc2626 inset;
+    }
+
+    .stamp-sub {
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      margin-top: 2px;
+    }
+
+    /* PROFILE SWITCHER MODAL */
+    #profile-switch-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 10001;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+    }
+
+    #profile-switch-modal.active {
+      display: flex;
+    }
+
+    .profile-card-modal {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px 18px;
+      width: 100%;
+      max-width: 340px;
+      text-align: center;
+    }
+
+    .profile-btn {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--card-subtle);
+      color: var(--text-main);
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .profile-btn.active {
+      border-color: var(--accent);
+      background: #1e3a8a33;
+      color: #60a5fa;
+    }
+
+    /* AUDIT LOG ITEMS FOR ADMIN */
+    .audit-item {
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.82rem;
+    }
+
+    .audit-item:last-child {
+      border-bottom: none;
+    }
+
+    .audit-header {
+      display: flex;
+      justify-content: space-between;
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      margin-bottom: 3px;
+    }
+
     /* LIGHTBOX & MODALS */
     #photo-lightbox {
       display: none;
@@ -576,7 +709,7 @@
       flex-direction: column;
       align-items: center;
       color: var(--text-muted);
-      font-size: 0.68rem;
+      font-size: 0.65rem;
       cursor: pointer;
       flex: 1;
       padding: 4px 0;
@@ -587,7 +720,7 @@
     }
 
     .nav-icon {
-      font-size: 1.15rem;
+      font-size: 1.1rem;
       margin-bottom: 2px;
     }
 
@@ -626,6 +759,7 @@
       border-bottom: 2px solid #e2e8f0;
       padding-bottom: 12px;
       margin-bottom: 12px;
+      padding-right: 110px;
     }
 
     .invoice-title {
@@ -638,17 +772,6 @@
       font-size: 0.75rem;
       color: #64748b;
       margin-top: 2px;
-    }
-
-    .invoice-badge {
-      background: #f1f5f9;
-      color: #334155;
-      font-size: 0.7rem;
-      font-weight: 700;
-      padding: 4px 8px;
-      border-radius: 6px;
-      border: 1px solid #cbd5e1;
-      text-transform: uppercase;
     }
 
     .parties-grid {
@@ -874,10 +997,13 @@
       <!-- Role Selection -->
       <div class="role-select-box">
         <div id="role-tenant-btn" class="role-option selected" onclick="selectLoginRole('tenant')">
-          👤 Tenant (Full)
+          👤 Tenant
         </div>
         <div id="role-landlord-btn" class="role-option" onclick="selectLoginRole('landlord')">
-          🏠 Landlord (View)
+          🏠 Landlord
+        </div>
+        <div id="role-admin-btn" class="role-option" onclick="selectLoginRole('admin')">
+          🛡️ Admin
         </div>
       </div>
       
@@ -887,7 +1013,7 @@
       <div id="landlord-link-box" style="display: none;">
         <input type="text" id="landlord-link-code" class="login-input" placeholder="Tenant Username / Property Code" autocomplete="off" autocorrect="off" autocapitalize="off">
         <div style="font-size: 0.72rem; color: var(--text-muted); text-align: left; margin: -6px 0 10px 4px;">
-          Enter the Tenant's username to view their readings & bills.
+          Enter the Tenant's username to link to their readings & bills.
         </div>
       </div>
 
@@ -901,12 +1027,42 @@
     </div>
   </div>
 
+  <!-- IN-APP PROFILE / ROLE SWITCHER MODAL -->
+  <div id="profile-switch-modal">
+    <div class="profile-card-modal">
+      <div style="font-size: 1.8rem; margin-bottom: 8px;">🔄</div>
+      <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 4px;">Switch Profile / Role</h3>
+      <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 16px;">
+        Quickly switch roles without re-logging in.
+      </p>
+
+      <button id="switch-to-tenant-btn" class="profile-btn" onclick="quickSwitchRole('tenant')">
+        <span>👤 Tenant (Full Control)</span>
+        <span id="tenant-check">✓</span>
+      </button>
+
+      <button id="switch-to-landlord-btn" class="profile-btn" onclick="quickSwitchRole('landlord')">
+        <span>🏠 Landlord (View Only)</span>
+        <span id="landlord-check" style="display:none;">✓</span>
+      </button>
+
+      <button id="switch-to-admin-btn" class="profile-btn" onclick="quickSwitchRole('admin')">
+        <span>🛡️ Admin Master View</span>
+        <span id="admin-check" style="display:none;">✓</span>
+      </button>
+
+      <button class="btn btn-subtle" onclick="closeProfileSwitcher()" style="margin-top: 10px; font-size: 0.85rem; padding: 10px;">Cancel</button>
+    </div>
+  </div>
+
   <!-- AUTHENTICATED APP CONTENT -->
   <header>
     <div id="cloud-indicator" class="cloud-badge">☁️ Connecting...</div>
     <h1>
       <span id="header-title">AC Tracker</span>
-      <span id="header-role-badge" class="role-tag tenant">TENANT</span>
+      <span id="header-role-badge" class="role-tag tenant" onclick="openProfileSwitcher()" title="Click to switch role">
+        TENANT ▾
+      </span>
     </h1>
     <button class="logout-btn" onclick="handleLogout()">Logout</button>
   </header>
@@ -975,7 +1131,7 @@
     </div>
 
     <div class="card" id="landlord-reading-card" style="display: none; background: #1a1e29; border-color: #1e3a8a;">
-      <div style="font-size: 0.85rem; color: #93c5fd; font-weight: 600; text-align: center;">
+      <div style="font-size: 0.85rem; color: #93c5fa; font-weight: 600; text-align: center;">
         👁️ Viewing as Landlord (Read-Only)<br>
         <span style="font-size: 0.75rem; font-weight: 400; color: var(--text-muted);">New meter readings and unit updates are logged by the tenant.</span>
       </div>
@@ -1058,6 +1214,35 @@
     <div id="past-bills-container"></div>
   </div>
 
+  <!-- TAB 5: MASTER ADMIN CONSOLE (VISIBLE ONLY TO ADMIN) -->
+  <div id="tab-admin" class="tab-content">
+    <div class="card">
+      <div class="card-title" style="color: var(--purple);">🛡️ Master Admin Overview</div>
+      <div style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 12px;">
+        Real-time audit log of app activity across tenants and landlords.
+      </div>
+      <div class="grid-2">
+        <div class="stat-box">
+          <div class="stat-sub">Total Workspaces</div>
+          <div id="admin-workspaces-count" class="stat-val" style="color: var(--purple);">1</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-sub">Tracked Events</div>
+          <div id="admin-events-count" class="stat-val">0</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Activity Audit Trail (Who is watching/doing what)</div>
+      <div id="admin-audit-trail">
+        <div style="text-align:center; padding: 16px; color: var(--text-muted); font-size: 0.82rem;">
+          No events logged yet.
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- PHOTO ATTACH / CONFIRM MODAL -->
   <div id="photo-upload-modal">
     <div class="upload-modal-card">
@@ -1090,15 +1275,21 @@
     <button class="btn btn-subtle" style="width: auto; padding: 6px 18px; margin-top: 14px; color: #fff;">Close</button>
   </div>
 
-  <!-- INVOICE & AUDIT MODAL -->
+  <!-- INVOICE & AUDIT MODAL WITH RUBBER STAMP SEALS -->
   <div id="invoice-modal" class="modal-overlay">
     <div class="invoice-card" id="printable-invoice">
+      
+      <!-- RUBBER STAMP SEAL (PAID VS DUE) -->
+      <div id="invoice-rubber-stamp" class="rubber-stamp stamp-paid">
+        <span id="stamp-title">★ FULLY PAID ★</span>
+        <span class="stamp-sub" id="stamp-sub">VERIFIED SETTLEMENT</span>
+      </div>
+
       <div class="invoice-header">
         <div>
           <div class="invoice-title">RENT & UTILITY RECEIPT</div>
           <div class="invoice-subtitle">Under Section 10(13A) of Income Tax Act</div>
         </div>
-        <div class="invoice-badge" id="inv-status">STATEMENT</div>
       </div>
 
       <div class="parties-grid">
@@ -1216,6 +1407,10 @@
       <div class="nav-icon">📑</div>
       <div>Past Bills</div>
     </div>
+    <div class="nav-item" id="nav-admin" style="display: none;" onclick="switchTab('admin')">
+      <div class="nav-icon">🛡️</div>
+      <div>Admin</div>
+    </div>
   </nav>
 
   <script>
@@ -1255,22 +1450,57 @@
     }
 
     /* =========================================================
-       MULTI-ACCOUNT & WORKSPACE ISOLATION LOGIC
+       ACTIVITY AUDIT LOGGER (ADMIN TRACKING)
        ========================================================= */
-    // Default built-in users
+    async function logActivity(action, details = {}) {
+      const currentUser = localStorage.getItem('tracker_current_user') || 'anonymous';
+      const role = currentActiveRole;
+      const workspace = currentActiveWorkspace;
+
+      const event = {
+        action,
+        user: currentUser,
+        role,
+        workspace,
+        details,
+        timestamp: new Date().toISOString()
+      };
+
+      if (db) {
+        try {
+          await db.collection("activity_logs").add(event);
+        } catch (e) {
+          console.warn("Could not log activity:", e);
+        }
+      }
+
+      let logs = JSON.parse(localStorage.getItem('portal_audit_logs') || '[]');
+      logs.unshift(event);
+      if (logs.length > 100) logs.pop();
+      localStorage.setItem('portal_audit_logs', JSON.stringify(logs));
+
+      if (currentActiveRole === 'admin') renderAdminConsole();
+    }
+
+    /* =========================================================
+       MULTI-ACCOUNT & ROLE MANAGEMENT
+       ========================================================= */
     const DEFAULT_ACCOUNTS = {
       "ganesh k": { hash: "e9869005e0c31138d97dd8ccbc857c18e7ca8e8fb29877ac9d7738de42606fbe", role: "tenant", directPass: "819042Nehrunagar", workspaceId: "ganesh_k" },
       "ganesh": { hash: "e9869005e0c31138d97dd8ccbc857c18e7ca8e8fb29877ac9d7738de42606fbe", role: "tenant", directPass: "819042Nehrunagar", workspaceId: "ganesh_k" },
       "e praveen kumar": { hash: "4a96d26f543d64de0165c0a0501ade9db702f30350a5e7930841fbdae42e367b", role: "landlord", directPass: "819042Mathiyazhagan", workspaceId: "ganesh_k" },
-      "praveen": { hash: "4a96d26f543d64de0165c0a0501ade9db702f30350a5e7930841fbdae42e367b", role: "landlord", directPass: "819042Mathiyazhagan", workspaceId: "ganesh_k" }
+      "praveen": { hash: "4a96d26f543d64de0165c0a0501ade9db702f30350a5e7930841fbdae42e367b", role: "landlord", directPass: "819042Mathiyazhagan", workspaceId: "ganesh_k" },
+      "admin": { hash: "0d30f68c69791e1ac49e5ccb7c08ef73126f3de5ca42e8e32c472371b866a42d", role: "admin", directPass: "819042Admin", workspaceId: "ganesh_k" },
+      "ganesh admin": { hash: "0d30f68c69791e1ac49e5ccb7c08ef73126f3de5ca42e8e32c472371b866a42d", role: "admin", directPass: "819042Admin", workspaceId: "ganesh_k" }
     };
 
     let userAccounts = JSON.parse(localStorage.getItem('portal_user_accounts') || 'null') || DEFAULT_ACCOUNTS;
-    let authMode = 'signin'; // 'signin' or 'register'
+    let authMode = 'signin';
     let selectedLoginRole = 'tenant';
     let currentActiveRole = 'tenant';
     let currentActiveWorkspace = 'ganesh_k';
     let cloudUnsubscribe = null;
+    let adminAuditUnsubscribe = null;
 
     function sanitizeId(str) {
       return str.toLowerCase().replace(/[^a-z0-9]/g, '_');
@@ -1284,7 +1514,9 @@
       document.getElementById('auth-sub-text').innerText = mode === 'signin' ? 'Sign in to access your dashboard' : 'Register a new separate tracker account';
       document.getElementById('login-error-msg').style.display = 'none';
 
-      // Toggle landlord link code input if in register mode + landlord
+      document.getElementById('role-admin-btn').style.display = mode === 'register' ? 'none' : 'block';
+      if (mode === 'register' && selectedLoginRole === 'admin') selectLoginRole('tenant');
+
       updateLandlordLinkBox();
     }
 
@@ -1292,6 +1524,7 @@
       selectedLoginRole = role;
       document.getElementById('role-tenant-btn').className = role === 'tenant' ? 'role-option selected' : 'role-option';
       document.getElementById('role-landlord-btn').className = role === 'landlord' ? 'role-option selected' : 'role-option';
+      document.getElementById('role-admin-btn').className = role === 'admin' ? 'role-option selected' : 'role-option';
       updateLandlordLinkBox();
     }
 
@@ -1328,7 +1561,6 @@
         return;
       }
 
-      // Check Cloud for updated user registry if available
       if (db) {
         try {
           const uDoc = await db.collection("tracker_users").doc(sanitizeId(userKey)).get();
@@ -1337,27 +1569,21 @@
             localStorage.setItem('portal_user_accounts', JSON.stringify(userAccounts));
           }
         } catch (e) {
-          console.warn("User registry check error:", e);
+          console.warn(e);
         }
       }
 
-      /* -------------------------------------------
-         BRANCH 1: REGISTRATION & INSTANT LOGIN
-         ------------------------------------------- */
       if (authMode === 'register') {
         if (userAccounts[userKey]) {
-          errEl.innerText = "Username already exists. Please choose another username or Sign In.";
+          errEl.innerText = "Username already exists. Please choose another username.";
           errEl.style.display = 'block';
           return;
         }
 
         let assignedWorkspace = '';
-
         if (selectedLoginRole === 'tenant') {
-          // New Tenant creates their own private workspace!
           assignedWorkspace = 'workspace_' + sanitizeId(userKey);
         } else {
-          // New Landlord links to an existing tenant's workspace
           const linkTarget = document.getElementById('landlord-link-code').value.trim().toLowerCase().replace(/\s+/g, ' ');
           if (linkTarget && userAccounts[linkTarget]) {
             assignedWorkspace = userAccounts[linkTarget].workspaceId;
@@ -1378,28 +1604,23 @@
         userAccounts[userKey] = newAccount;
         localStorage.setItem('portal_user_accounts', JSON.stringify(userAccounts));
 
-        // Sync new user credentials to Firestore users collection
         if (db) {
           try {
             await db.collection("tracker_users").doc(sanitizeId(userKey)).set(newAccount);
           } catch (e) {
-            console.warn("Could not push new user to cloud:", e);
+            console.warn(e);
           }
         }
 
-        // Initialize empty workspace data if brand new tenant
         if (selectedLoginRole === 'tenant') {
           initializeBlankWorkspace(assignedWorkspace, rawUser);
         }
 
-        // AUTO-LOGIN INSTANTLY
+        logActivity("Account Registered", { username: rawUser, role: selectedLoginRole });
         performLogin(userKey, newAccount);
         return;
       }
 
-      /* -------------------------------------------
-         BRANCH 2: SIGN IN
-         ------------------------------------------- */
       const account = userAccounts[userKey];
       if (!account) {
         errEl.innerText = "Username not found. Check spelling or create a New Account.";
@@ -1417,6 +1638,7 @@
       const isMatch = (inputHash === account.hash) || (pass === account.directPass);
 
       if (isMatch) {
+        logActivity("User Signed In", { username: rawUser, role: account.role });
         performLogin(userKey, account);
       } else {
         errEl.innerText = "Incorrect password.";
@@ -1439,6 +1661,7 @@
       applyRoleRestrictions();
       loadWorkspaceData();
       subscribeToWorkspaceCloud();
+      if (currentActiveRole === 'admin') subscribeToAdminAudit();
     }
 
     function checkAuth() {
@@ -1453,13 +1676,16 @@
         loadWorkspaceData();
         document.getElementById('auth-screen').style.display = 'none';
         subscribeToWorkspaceCloud();
+        if (currentActiveRole === 'admin') subscribeToAdminAudit();
       } else {
         document.getElementById('auth-screen').style.display = 'flex';
       }
     }
 
     function handleLogout() {
+      logActivity("User Logged Out", {});
       if (cloudUnsubscribe) cloudUnsubscribe();
+      if (adminAuditUnsubscribe) adminAuditUnsubscribe();
       localStorage.removeItem('tracker_authenticated');
       localStorage.removeItem('tracker_current_user');
       localStorage.removeItem('tracker_user_role');
@@ -1467,33 +1693,113 @@
       location.reload();
     }
 
-    function applyRoleRestrictions() {
-      const isTenant = (currentActiveRole === 'tenant');
-      const roleBadge = document.getElementById('header-role-badge');
+    function openProfileSwitcher() {
+      document.getElementById('tenant-check').style.display = (currentActiveRole === 'tenant') ? 'inline' : 'none';
+      document.getElementById('landlord-check').style.display = (currentActiveRole === 'landlord') ? 'inline' : 'none';
+      document.getElementById('admin-check').style.display = (currentActiveRole === 'admin') ? 'inline' : 'none';
+      document.getElementById('profile-switch-modal').classList.add('active');
+    }
 
-      if (isTenant) {
-        roleBadge.innerText = 'TENANT';
+    function closeProfileSwitcher() {
+      document.getElementById('profile-switch-modal').classList.remove('active');
+    }
+
+    function quickSwitchRole(newRole) {
+      currentActiveRole = newRole;
+      localStorage.setItem('tracker_user_role', newRole);
+      closeProfileSwitcher();
+      applyRoleRestrictions();
+      logActivity("Quick-Switched Role", { newRole });
+
+      if (newRole === 'admin') {
+        subscribeToAdminAudit();
+        switchTab('admin');
+      } else {
+        switchTab('ac');
+      }
+    }
+
+    function applyRoleRestrictions() {
+      const roleBadge = document.getElementById('header-role-badge');
+      const adminNav = document.getElementById('nav-admin');
+
+      if (currentActiveRole === 'tenant') {
+        roleBadge.innerText = 'TENANT ▾';
         roleBadge.className = 'role-tag tenant';
+        adminNav.style.display = 'none';
 
         document.getElementById('tenant-add-reading-card').style.display = 'block';
         document.getElementById('landlord-reading-card').style.display = 'none';
         document.getElementById('tenant-end-cycle-btn').style.display = 'flex';
         document.getElementById('toggle-ac-btn').style.display = 'flex';
         document.getElementById('landlord-ac-notice').style.display = 'none';
-      } else {
-        roleBadge.innerText = 'LANDLORD';
+      } else if (currentActiveRole === 'landlord') {
+        roleBadge.innerText = 'LANDLORD ▾';
         roleBadge.className = 'role-tag landlord';
+        adminNav.style.display = 'none';
 
         document.getElementById('tenant-add-reading-card').style.display = 'none';
         document.getElementById('landlord-reading-card').style.display = 'block';
         document.getElementById('tenant-end-cycle-btn').style.display = 'none';
         document.getElementById('toggle-ac-btn').style.display = 'none';
         document.getElementById('landlord-ac-notice').style.display = 'block';
+      } else {
+        roleBadge.innerText = 'ADMIN ▾';
+        roleBadge.className = 'role-tag admin';
+        adminNav.style.display = 'flex';
+
+        document.getElementById('tenant-add-reading-card').style.display = 'block';
+        document.getElementById('landlord-reading-card').style.display = 'none';
+        document.getElementById('tenant-end-cycle-btn').style.display = 'flex';
+        document.getElementById('toggle-ac-btn').style.display = 'flex';
+        document.getElementById('landlord-ac-notice').style.display = 'none';
       }
     }
 
+    function subscribeToAdminAudit() {
+      if (!db) return;
+      if (adminAuditUnsubscribe) adminAuditUnsubscribe();
+
+      adminAuditUnsubscribe = db.collection("activity_logs")
+        .orderBy("timestamp", "desc")
+        .limit(40)
+        .onSnapshot((snapshot) => {
+          const list = [];
+          snapshot.forEach(doc => list.push(doc.data()));
+          renderAdminLogs(list);
+        }, err => console.warn("Admin audit sync:", err));
+    }
+
+    function renderAdminLogs(logs) {
+      const container = document.getElementById('admin-audit-trail');
+      if (!container) return;
+
+      document.getElementById('admin-events-count').innerText = logs.length;
+
+      if (logs.length === 0) {
+        container.innerHTML = `<div style="text-align:center; padding: 16px; color: var(--text-muted); font-size: 0.82rem;">No events logged.</div>`;
+        return;
+      }
+
+      container.innerHTML = logs.map(ev => {
+        const time = new Date(ev.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        const date = new Date(ev.timestamp).toLocaleDateString([], { month: 'short', day: 'numeric' });
+        return `
+          <div class="audit-item">
+            <div class="audit-header">
+              <span><strong>${ev.user}</strong> (${ev.role})</span>
+              <span>${date} ${time}</span>
+            </div>
+            <div style="font-weight: 600; color: #f3f4f6;">${ev.action}</div>
+            ${ev.details && Object.keys(ev.details).length > 0 ? 
+              `<div style="font-size: 0.72rem; color: #94a3b8; margin-top: 2px;">${JSON.stringify(ev.details).replace(/[{}"]/g, ' ')}</div>` : ''}
+          </div>
+        `;
+      }).join('');
+    }
+
     /* =========================================================
-       WORKSPACE-SPECIFIC DATA & CLOUD SYNC
+       WORKSPACE DATA MANAGEMENT
        ========================================================= */
     const CONFIG = {
       ratePerUnit: 8,
@@ -1544,14 +1850,10 @@
       };
 
       localStorage.setItem(`ws_${wsId}_data`, JSON.stringify(blankData));
-
-      if (db) {
-        db.collection("tracker_workspaces").doc(wsId).set(blankData).catch(e => console.warn(e));
-      }
+      if (db) db.collection("tracker_workspaces").doc(wsId).set(blankData).catch(e => console.warn(e));
     }
 
     function loadWorkspaceData() {
-      // If loading Ganesh's workspace, migrate existing data if needed
       if (currentActiveWorkspace === 'ganesh_k') {
         meterReadings = JSON.parse(localStorage.getItem('meterReadings') || '[]');
         acSessions = JSON.parse(localStorage.getItem('acSessions') || '[]');
@@ -1566,7 +1868,6 @@
           landlordPhone: 'Available on Record'
         };
       } else {
-        // Load data specific to this workspace
         const local = JSON.parse(localStorage.getItem(`ws_${currentActiveWorkspace}_data`) || 'null');
         if (local) {
           meterReadings = local.meterReadings || [];
@@ -1610,7 +1911,6 @@
         lastUpdated: new Date().toISOString()
       };
 
-      // Save locally per workspace
       if (currentActiveWorkspace === 'ganesh_k') {
         localStorage.setItem('meterReadings', JSON.stringify(meterReadings));
         localStorage.setItem('acSessions', JSON.stringify(acSessions));
@@ -1707,10 +2007,16 @@
         document.getElementById('nav-proofs').classList.add('active');
         document.getElementById('header-title').innerText = 'Meter Photo Proofs (30d)';
         renderProofsGallery();
-      } else {
+        logActivity("Viewed Submeter Photo Proofs", {});
+      } else if (tab === 'past') {
         document.getElementById('tab-past').classList.add('active');
         document.getElementById('nav-past').classList.add('active');
         document.getElementById('header-title').innerText = 'Past Month Bills';
+        logActivity("Viewed Past Month Bills", {});
+      } else if (tab === 'admin') {
+        document.getElementById('tab-admin').classList.add('active');
+        document.getElementById('nav-admin').classList.add('active');
+        document.getElementById('header-title').innerText = 'Admin Console';
       }
     }
 
@@ -1746,7 +2052,7 @@
     }
 
     function toggleAC() {
-      if (currentActiveRole !== 'tenant') {
+      if (currentActiveRole === 'landlord') {
         alert("View-Only: Only the tenant can operate the AC timer.");
         return;
       }
@@ -1755,6 +2061,7 @@
         currentSession = { startTime: new Date().toISOString() };
         localStorage.setItem(`ws_${currentActiveWorkspace}_session`, JSON.stringify(currentSession));
         startTimerDisplay();
+        logActivity("Turned AC ON", { startedAt: currentSession.startTime });
       } else {
         const start = new Date(currentSession.startTime);
         const end = new Date();
@@ -1793,6 +2100,9 @@
             duration: durBeforeMidnight
           });
         }
+
+        const loggedMins = Math.round((end - start) / 60000);
+        logActivity("Turned AC OFF", { durationMinutes: loggedMins });
 
         currentSession = null;
         localStorage.removeItem(`ws_${currentActiveWorkspace}_session`);
@@ -1891,7 +2201,7 @@
 
     /* METER PROOFS & READINGS */
     function initiateSaveReading() {
-      if (currentActiveRole !== 'tenant') {
+      if (currentActiveRole === 'landlord') {
         alert("View-Only: Only the tenant can add meter readings.");
         return;
       }
@@ -1971,6 +2281,8 @@
         meterProofs.unshift(proofEntry);
       }
 
+      logActivity("Logged Meter Reading", { units: pendingReading.units, date: pendingReading.date, withPhoto });
+
       document.getElementById('photo-upload-modal').classList.remove('active');
       document.getElementById('meter-val').value = '';
       pendingReading = null;
@@ -1989,7 +2301,7 @@
 
       const thirtyDaysMs = 30 * 24 * 60 * 60 * 1000;
       const now = Date.now();
-      const isTenant = (currentActiveRole === 'tenant');
+      const canDelete = (currentActiveRole !== 'landlord');
 
       const activeProofs = meterProofs.filter(p => {
         const age = now - (p.uploadedAt || new Date(p.date).getTime());
@@ -2027,7 +2339,7 @@
 
             <div class="proof-meta">
               <span>🔒 Verified Snapshot</span>
-              ${isTenant ? `<button class="action-btn del" onclick="deleteMeterProof('${p.id}')">🗑️ Delete Proof</button>` : `<span style="font-size: 0.72rem; color: var(--text-muted);">Read-Only</span>`}
+              ${canDelete ? `<button class="action-btn del" onclick="deleteMeterProof('${p.id}')">🗑️ Delete Proof</button>` : `<span style="font-size: 0.72rem; color: var(--text-muted);">Read-Only</span>`}
             </div>
           </div>
         `;
@@ -2035,12 +2347,13 @@
     }
 
     function deleteMeterProof(proofId) {
-      if (currentActiveRole !== 'tenant') {
-        alert("View-Only: Only tenant can delete meter photos.");
+      if (currentActiveRole === 'landlord') {
+        alert("View-Only: Landlord cannot delete meter photos.");
         return;
       }
       if (!confirm("Delete this photo proof? (Use only if image is blurred or unclear)")) return;
       meterProofs = meterProofs.filter(p => p.id !== proofId);
+      logActivity("Deleted Photo Proof", { proofId });
       renderProofsGallery();
       pushToCloud();
     }
@@ -2049,6 +2362,7 @@
       document.getElementById('lightbox-img').src = imgSrc;
       document.getElementById('lightbox-caption').innerText = caption;
       document.getElementById('photo-lightbox').classList.add('active');
+      logActivity("Inspected Photo Fullscreen", { caption });
     }
 
     function closeLightbox() {
@@ -2056,7 +2370,7 @@
     }
 
     function editMeterReading(index) {
-      if (currentActiveRole !== 'tenant') {
+      if (currentActiveRole === 'landlord') {
         alert("View-Only: Only the tenant can edit meter readings.");
         return;
       }
@@ -2080,17 +2394,19 @@
       meterReadings[index].units = parsedUnits;
 
       meterReadings.sort((a, b) => new Date(a.date) - new Date(b.date));
+      logActivity("Edited Meter Reading", { index, newUnits: parsedUnits, newDate });
       renderMeterHistory();
       pushToCloud();
     }
 
     function deleteMeterReading(index) {
-      if (currentActiveRole !== 'tenant') {
-        alert("View-Only: Only the tenant can delete meter readings.");
+      if (currentActiveRole === 'landlord') {
+        alert("View-Only: Landlord cannot delete meter readings.");
         return;
       }
 
       if (confirm(`Delete reading for ${meterReadings[index].date} (${meterReadings[index].units} u)?`)) {
+        logActivity("Deleted Meter Reading", { item: meterReadings[index] });
         meterReadings.splice(index, 1);
         renderMeterHistory();
         pushToCloud();
@@ -2099,7 +2415,7 @@
 
     function renderMeterHistory() {
       const list = document.getElementById('meter-history-list');
-      const isTenant = (currentActiveRole === 'tenant');
+      const canEdit = (currentActiveRole !== 'landlord');
 
       if (meterReadings.length === 0) {
         list.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 12px 0;">No readings logged.</div>';
@@ -2138,7 +2454,7 @@
             </div>
             <div style="display: flex; align-items: center; gap: 8px;">
               <span style="font-weight: 700; margin-right: 4px;">${item.units} u</span>
-              ${isTenant ? `
+              ${canEdit ? `
                 <button class="action-btn edit" onclick="editMeterReading(${i})">✎ Edit</button>
                 <button class="action-btn del" onclick="deleteMeterReading(${i})">✕</button>
               ` : ''}
@@ -2166,8 +2482,8 @@
     }
 
     function endCurrentMonthCycle() {
-      if (currentActiveRole !== 'tenant') {
-        alert("View-Only: Only tenant can close and archive the billing cycle.");
+      if (currentActiveRole === 'landlord') {
+        alert("View-Only: Landlord cannot close the billing cycle.");
         return;
       }
 
@@ -2226,6 +2542,8 @@ Total Payable: ₹${totalBill.toLocaleString('en-IN')}`;
       pastBills.unshift(archivedBill);
       meterReadings = [{ date: latest.date, units: latest.units }];
 
+      logActivity("Archived & Settled Month Cycle", { periodStr, totalBill, paymentMode: pMode });
+
       renderPastBills();
       renderMeterHistory();
       renderAC();
@@ -2276,8 +2594,8 @@ Total Payable: ₹${totalBill.toLocaleString('en-IN')}`;
     }
 
     function editPartyDetails() {
-      if (currentActiveRole !== 'tenant') {
-        alert("View-Only: Only tenant can edit property details.");
+      if (currentActiveRole === 'landlord') {
+        alert("View-Only: Landlord cannot edit property details.");
         return;
       }
 
@@ -2301,25 +2619,37 @@ Total Payable: ₹${totalBill.toLocaleString('en-IN')}`;
         landlordPhone: partyDetails.landlordPhone
       };
 
+      logActivity("Updated Tenant/Landlord IT Details", partyDetails);
       updatePartyDisplay();
       pushToCloud();
       alert("Tenant & Landlord information saved and synced to Cloud!");
     }
 
+    /* =========================================================
+       INVOICE MODAL WITH DYNAMIC RUBBER STAMP SEALS
+       ========================================================= */
     function showInvoiceModal(billId = null) {
       const select = document.getElementById('payment-mode-select');
       const auditContainer = document.getElementById('day-audit-rows');
+      const stampEl = document.getElementById('invoice-rubber-stamp');
+      const stampTitle = document.getElementById('stamp-title');
+      const stampSub = document.getElementById('stamp-sub');
       let auditLogHtml = '';
 
       if (billId) {
+        // SETTLED / PAID INVOICE
         const past = pastBills.find(b => b.id === billId);
         if (!past) return;
         viewingBill = past;
         selectedPaymentMode = past.paymentMode || 'Cash';
         select.value = selectedPaymentMode;
 
+        // Apply FULLY PAID SEAL
+        stampEl.className = 'rubber-stamp stamp-paid';
+        stampTitle.innerText = '★ FULLY PAID ★';
+        stampSub.innerText = `${past.paymentMode || 'CASH'} • SETTLED`;
+
         document.getElementById('inv-period').innerText = past.period;
-        document.getElementById('inv-status').innerText = 'PAID STATEMENT';
         document.getElementById('inv-status-label').innerText = 'PAID / ARCHIVED';
         document.getElementById('inv-meter-range').innerText = `${past.meterStart} u ➔ ${past.meterEnd} u`;
         document.getElementById('inv-rent-sub').innerText = past.rentNote || 'Eligible for HRA Exemption';
@@ -2340,7 +2670,11 @@ Total Payable: ₹${totalBill.toLocaleString('en-IN')}`;
         } else {
           auditLogHtml = `<div style="text-align:center; padding: 4px; color:#64748b;">Baseline: ${past.meterStart} u | Closing: ${past.meterEnd} u</div>`;
         }
+
+        logActivity("Viewed Paid Monthly Receipt", { period: past.period });
+
       } else {
+        // PROVISIONAL / ACTIVE INVOICE (DUE)
         if (meterReadings.length === 0) {
           alert("Please record a meter reading first.");
           return;
@@ -2365,8 +2699,12 @@ Total Payable: ₹${totalBill.toLocaleString('en-IN')}`;
           status: 'STATEMENT'
         };
 
+        // Apply PAYMENT DUE SEAL
+        stampEl.className = 'rubber-stamp stamp-due';
+        stampTitle.innerText = '⚠ PAYMENT DUE ⚠';
+        stampSub.innerText = 'PROVISIONAL STATEMENT';
+
         document.getElementById('inv-period').innerText = viewingBill.period;
-        document.getElementById('inv-status').innerText = 'PROVISIONAL';
         document.getElementById('inv-status-label').innerText = 'DUE / ACTIVE';
         document.getElementById('inv-meter-range').innerText = `${baseline.units} u ➔ ${latest.units} u`;
         document.getElementById('inv-rent-sub').innerText = 'Eligible for HRA Exemption';
@@ -2387,6 +2725,8 @@ Total Payable: ₹${totalBill.toLocaleString('en-IN')}`;
             </div>
           `;
         }).join('');
+
+        logActivity("Viewed Provisional Bill Receipt", { period: viewingBill.period, totalBill });
       }
 
       auditContainer.innerHTML = auditLogHtml;
@@ -2395,7 +2735,7 @@ Total Payable: ₹${totalBill.toLocaleString('en-IN')}`;
 
       const editBtn = document.getElementById('edit-parties-btn');
       if (editBtn) {
-        editBtn.style.display = (currentActiveRole === 'tenant') ? 'block' : 'none';
+        editBtn.style.display = (currentActiveRole !== 'landlord') ? 'block' : 'none';
       }
 
       document.getElementById('invoice-modal').classList.add('active');
@@ -2456,6 +2796,8 @@ Total Payable: ₹${totalBill.toLocaleString('en-IN')}`;
 
           const filename = `Rent-Bill-${viewingBill ? viewingBill.period.replace(/[^a-zA-Z0-9]/g, '-') : 'Receipt'}.png`;
           const file = new File([blob], filename, { type: 'image/png' });
+
+          logActivity("Exported Receipt Image", { filename });
 
           if (navigator.canShare && navigator.canShare({ files: [file] })) {
             try {
@@ -2540,6 +2882,7 @@ ${logStr}
 
       navigator.clipboard.writeText(report).then(() => {
         alert('Monthly report copied to clipboard! Paste it directly into Gemini.');
+        logActivity("Copied Monthly Gemini Report", {});
       }).catch(err => {
         alert('Could not copy report: ' + err);
       });
@@ -2564,6 +2907,7 @@ ${logStr}
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
+      logActivity("Downloaded JSON Backup", {});
     }
 
     window.onload = init;
