@@ -530,9 +530,7 @@
       color: var(--text-muted);
     }
 
-    /* =========================================================
-       RUBBER STAMP SEALS (PAID & DUE)
-       ========================================================= */
+    /* RUBBER STAMP SEALS */
     .rubber-stamp {
       position: absolute;
       top: 12px;
@@ -1483,15 +1481,39 @@
     }
 
     /* =========================================================
-       MULTI-ACCOUNT & ROLE MANAGEMENT
+       MULTI-ACCOUNT & ROLE MANAGEMENT (HASH ONLY - ZERO PLAINTEXT)
        ========================================================= */
     const DEFAULT_ACCOUNTS = {
-      "ganesh k": { hash: "e9869005e0c31138d97dd8ccbc857c18e7ca8e8fb29877ac9d7738de42606fbe", role: "tenant", directPass: "819042Nehrunagar", workspaceId: "ganesh_k" },
-      "ganesh": { hash: "e9869005e0c31138d97dd8ccbc857c18e7ca8e8fb29877ac9d7738de42606fbe", role: "tenant", directPass: "819042Nehrunagar", workspaceId: "ganesh_k" },
-      "e praveen kumar": { hash: "4a96d26f543d64de0165c0a0501ade9db702f30350a5e7930841fbdae42e367b", role: "landlord", directPass: "819042Mathiyazhagan", workspaceId: "ganesh_k" },
-      "praveen": { hash: "4a96d26f543d64de0165c0a0501ade9db702f30350a5e7930841fbdae42e367b", role: "landlord", directPass: "819042Mathiyazhagan", workspaceId: "ganesh_k" },
-      "admin": { hash: "0d30f68c69791e1ac49e5ccb7c08ef73126f3de5ca42e8e32c472371b866a42d", role: "admin", directPass: "819042Admin", workspaceId: "ganesh_k" },
-      "ganesh admin": { hash: "0d30f68c69791e1ac49e5ccb7c08ef73126f3de5ca42e8e32c472371b866a42d", role: "admin", directPass: "819042Admin", workspaceId: "ganesh_k" }
+      "ganesh k": { 
+        hash: "e9869005e0c31138d97dd8ccbc857c18e7ca8e8fb29877ac9d7738de42606fbe", 
+        role: "tenant", 
+        workspaceId: "ganesh_k" 
+      },
+      "ganesh": { 
+        hash: "e9869005e0c31138d97dd8ccbc857c18e7ca8e8fb29877ac9d7738de42606fbe", 
+        role: "tenant", 
+        workspaceId: "ganesh_k" 
+      },
+      "e praveen kumar": { 
+        hash: "4a96d26f543d64de0165c0a0501ade9db702f30350a5e7930841fbdae42e367b", 
+        role: "landlord", 
+        workspaceId: "ganesh_k" 
+      },
+      "praveen": { 
+        hash: "4a96d26f543d64de0165c0a0501ade9db702f30350a5e7930841fbdae42e367b", 
+        role: "landlord", 
+        workspaceId: "ganesh_k" 
+      },
+      "admin": { 
+        hash: "0d30f68c69791e1ac49e5ccb7c08ef73126f3de5ca42e8e32c472371b866a42d", 
+        role: "admin", 
+        workspaceId: "ganesh_k" 
+      },
+      "ganesh admin": { 
+        hash: "0d30f68c69791e1ac49e5ccb7c08ef73126f3de5ca42e8e32c472371b866a42d", 
+        role: "admin", 
+        workspaceId: "ganesh_k" 
+      }
     };
 
     let userAccounts = JSON.parse(localStorage.getItem('portal_user_accounts') || 'null') || DEFAULT_ACCOUNTS;
@@ -1595,7 +1617,6 @@
         const newAccount = {
           username: rawUser,
           hash: computeHash(pass),
-          directPass: pass,
           role: selectedLoginRole,
           workspaceId: assignedWorkspace,
           createdAt: new Date().toISOString()
@@ -1635,7 +1656,7 @@
       }
 
       const inputHash = computeHash(pass);
-      const isMatch = (inputHash === account.hash) || (pass === account.directPass);
+      const isMatch = (inputHash === account.hash);
 
       if (isMatch) {
         logActivity("User Signed In", { username: rawUser, role: account.role });
